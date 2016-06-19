@@ -1,0 +1,14 @@
+
+var i, n = 3;
+
+/*
+//defines varible "n" as integer, like in Clipper
+n = 0;
+Write("Input a integer: ");
+Read(n);
+*/
+
+WriteLn("Table of: ",n);
+
+for (i = 1; i <= 10; i = i + 1)
+   WriteLn(n," x ",i," = ",i * n);

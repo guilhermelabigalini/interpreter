@@ -1,0 +1,28 @@
+/*
+  header {
+    function sum(a, b)
+    function hello()
+    function mydouble()
+  } */
+
+
+function sum(a, b) {
+  WriteLn("The sum of ", a, " + ", b, " = ", a + b);
+  var i = 0;
+  while (i++ < 5)
+    WriteLn(i);
+  return a + b;
+}
+
+function Mydouble(a) {
+  WriteLn(a * 2);
+}
+
+function hello() {
+  WriteLn("Hello, world!");
+}
+
+var x = sum(5,2);
+writeln(x);
+hello();
+Mydouble(2);

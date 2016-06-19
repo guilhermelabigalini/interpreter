@@ -1,0 +1,5 @@
+var a;
+
+// faz uma soma
+
+a = power(3 + 2 * 3,2);
