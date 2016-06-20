@@ -25,7 +25,7 @@ public abstract class Expr {
         return parent;
     }
 
-    public abstract void Exec();
+    public abstract void Exec() throws ExecutionSignalException;
     
     public void BeforeExec() {
     }

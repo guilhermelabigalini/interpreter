@@ -1,6 +1,5 @@
 package org.os.interpreter;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +18,7 @@ import org.os.interpreter.exptree.DivExpr;
 import org.os.interpreter.exptree.EqualExpr;
 import org.os.interpreter.exptree.Expr;
 import org.os.interpreter.exptree.FuncExpr;
+import org.os.interpreter.exptree.IfExpr;
 import org.os.interpreter.exptree.InstructLstExpr;
 import org.os.interpreter.exptree.MinusAssignExpr;
 import org.os.interpreter.exptree.ModAssignExpr;
@@ -40,6 +40,7 @@ import org.os.interpreter.exptree.TimesExpr;
 import org.os.interpreter.exptree.TwoOpsExpr;
 import org.os.interpreter.exptree.UserFuncCaller;
 import org.os.interpreter.exptree.VaribleExpr;
+import org.os.interpreter.exptree.WhileExpr;
 import org.os.interpreter.token.Bookmark;
 import org.os.interpreter.token.StreamToken;
 import org.os.interpreter.token.Token;
@@ -79,13 +80,14 @@ public class Interpreter {
 
         FUserFunctions = new HashMap<>();
         procExpr = new ProcExpr();
-        
-        if (! ReadProc(procExpr))
+
+        if (!ReadProc(procExpr)) {
             throw new ParseException(this.errors);
+        }
 
         return procExpr;
     }
-   
+
     protected void logError(String msg) {
         errors.add(new Error(FTokenizer.getCurrentLine(), msg));
     }
@@ -101,7 +103,7 @@ public class Interpreter {
         loopCount = 0;
         StreamToken tkn;
         boolean tmpR;
-        
+
         tkn = FTokenizer.GetNextToken();
         FLastExprLine = FTokenizer.getCurrentLine();
         FLastTkn = tkn;
@@ -111,11 +113,11 @@ public class Interpreter {
                 return ReadVar(Expr, tkn);
             case ttName:
                 return ReadExpr(tkn, Expr);
-            /*case ttWhile:
+            case ttWhile:
                 loopCount++;
                 tmpR = ReadWhile(Expr);
                 loopCount--;
-                return tmpR;
+                return tmpR;/*
             case ttDo:
                 loopCount++;
                 tmpR = ReadDoWhile(Expr);
@@ -125,10 +127,10 @@ public class Interpreter {
                 loopCount++;
                 tmpR = ReadFor(Expr);
                 loopCount--;
-                return tmpR;
+                return tmpR;*/
             case ttIf:
                 return ReadIf(Expr);
-            case ttSwitch:
+            /*case ttSwitch:
                 return ReadSwitch(Expr);
             case ttTry:
                 return ReadTry(Expr);
@@ -566,7 +568,8 @@ public class Interpreter {
                 if (Expr.ExitsVar(name, true)) {
                     VaribleExpr varExp = new VaribleExpr(name, Expr);
                     Result.setValue(varExp);
-                } /*else if (FFunctions -> Find(name, i)) {
+                }
+                /*else if (FFunctions -> Find(name, i)) {
                     tkn = FTokenizer.GetNextToken();
                     if (tkn.getToken() != Token.ttBLeft) {
                         //raise an exception
@@ -713,7 +716,8 @@ public class Interpreter {
                 || (token == Token.ttBigger) || (token == Token.ttBEqual)
                 || (token == Token.ttSmall) || (token == Token.ttSEqual)
                 || (token == Token.ttIsEqual) || (token == Token.ttMod)
-                || (token == Token.ttNotEqual));
+                || (token == Token.ttNotEqual) || (token == Token.ttOr)
+                || (token == Token.ttAnd));
     }
 
     private int GetOperatorLevel(Token token) {
@@ -737,6 +741,108 @@ public class Interpreter {
                 return 4;
             default:
                 return -1;
+        }
+    }
+
+    private boolean ReadIf(InstructLstExpr Expr) {
+        IfExpr IfExpr;
+        Reference<CustomEvalExpr> Condition = new Reference<>();
+        Bookmark Book;
+        StreamToken tkn;
+
+        tkn = FTokenizer.GetNextToken();
+        if (tkn.getToken() != Token.ttBLeft) {
+            //if nao seguido de parentes, gerar erro
+            logError(Error.EBLEFTIF);
+            return false;
+        }
+
+        if (!LeComNivels(Expr, Condition, ExpressionStep.esSubExpr)) {
+            //erro ao ler condicao, erro gerado
+            return false;
+        }
+
+        IfExpr = new IfExpr(Expr, Condition.getValue());
+
+        if (!ReadBlock(IfExpr, false)) {
+            return false;
+        }
+
+        Book = FTokenizer.GetBookmark();
+        tkn = FTokenizer.GetNextToken();
+        if (tkn.getToken() == Token.ttElse) {
+            if (!ReadBlock(IfExpr.getElseExpr(), false)) {
+                return false;
+            }
+        } else /* TODO 3 -cbook: qnd da bookmark, o token antigo tem que ser desalocado
+               se o token, fosse ttName, um char * estaria alocado */ {
+            FTokenizer.GotoBookmark(Book);
+        }
+
+        Expr.AddItem(IfExpr);
+
+        return true;
+    }
+
+    private boolean ReadBlock(InstructLstExpr Expr, boolean ForceBegin) {
+        Bookmark Book;
+        StreamToken tkn;
+
+        Book = FTokenizer.GetBookmark();
+        tkn = FTokenizer.GetNextToken();
+        if (tkn.getToken() == Token.ttBegin) {
+            while (true) {
+                if (!ReadStmnt(Expr)) {
+                    if (FLastTkn.getToken() != Token.ttEnd) {
+                        return false;
+                    }
+                    return true;
+                }
+                Book = FTokenizer.GetBookmark();
+                tkn = FTokenizer.GetNextToken();
+                if (tkn.getToken() == Token.ttEnd) {
+                    return true;
+                } else /* TODO 3 -cbook: qnd da bookmark, o token antigo tem que ser desalocado
+               se o token, fosse ttName, um char * estaria alocado */ {
+                    FTokenizer.GotoBookmark(Book);
+                }
+            }
+        } else {
+            if (ForceBegin) {
+                logError(Error.EBEGIN);
+                return false;
+            }
+            /* TODO 3 -cbook: qnd da bookmark, o token antigo tem que ser desalocado
+            se o token, fosse ttName, um char * estaria alocado */
+            FTokenizer.GotoBookmark(Book);
+            return ReadStmnt(Expr);
+        }
+    }
+
+    private boolean ReadWhile(InstructLstExpr Expr) {
+        WhileExpr WhileExpr;
+        Reference<CustomEvalExpr> Condition = new Reference<>();
+        StreamToken tkn;
+
+        tkn = FTokenizer.GetNextToken();
+        if (tkn.getToken() == Token.ttBLeft) {
+            if (!LeComNivels(Expr, Condition, ExpressionStep.esSubExpr)) {
+                //erro ao ler condicao, erro ja gerado
+                return false;
+            }
+
+            WhileExpr = new WhileExpr(Expr, Condition.getValue());
+
+            if (!ReadBlock(WhileExpr, false)) {
+                return false;
+            }
+
+            Expr.AddItem(WhileExpr);
+            return true;
+        } else {
+            //while nao seguido de parentes, gerar erro
+            logError(Error.EBLEFT);
+            return false;
         }
     }
 }

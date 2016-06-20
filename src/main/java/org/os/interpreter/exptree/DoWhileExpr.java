@@ -9,6 +9,10 @@ package org.os.interpreter.exptree;
  *
  * @author guilherme
  */
-public class DoWhileExpr extends WhileExpr {
+public class DoWhileExpr extends ConditionalExpr {
+
+    public DoWhileExpr(Expr parent, CustomEvalExpr Condition) {
+        super(parent, Condition);
+    }
     
 }

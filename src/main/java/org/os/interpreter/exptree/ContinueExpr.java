@@ -12,8 +12,9 @@ package org.os.interpreter.exptree;
 public class ContinueExpr extends Expr {
 
     @Override
-    public void Exec() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void Exec()  throws ExecutionSignalException {
+        throw new ContinueSignalException();
     }
+
     
 }

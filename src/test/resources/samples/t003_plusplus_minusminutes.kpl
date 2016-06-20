@@ -1,5 +1,18 @@
 var a = 1;
 var b = 10;
+var c = 5;
+var k, z, m, n, x, y, p, o;
 
 a++;
 b--;
+
+k = c;
+z = c;
+m = c;
+n = c;
+
+x = 1 + k++;
+y = 1 + ++z;
+
+p = 1 + m--;
+o = 1 + --n;

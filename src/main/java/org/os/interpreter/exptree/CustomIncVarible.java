@@ -9,11 +9,6 @@ package org.os.interpreter.exptree;
  *
  * @author guilherme
  */
-public class CustomIncVarible extends EvalExpr {
-
-    @Override
-    public Value Eval() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+public abstract class CustomIncVarible extends EvalExpr {
     
 }

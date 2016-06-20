@@ -6,6 +6,7 @@
 package org.os.interpreter.token;
 
 import static java.lang.Character.*;
+import org.os.interpreter.Reference;
 import static org.os.interpreter.token.CharHelper.*;
 
 /**
@@ -57,10 +58,13 @@ public class Tokenizer {
 
             } while (!reader.eof() && (isAlphabetic(reader.currentChar()) || reader.currentChar() == '_' || isDigit(reader.currentChar())));
 
-            t = NameToToken(name);
+            Reference<Object> refValue = new Reference<>();
+            t = NameToToken(name, refValue);
 
             if (t == Token.ttName) {
                 data = name;
+            } else {
+                data = refValue.getValue();
             }
         } else if (isDigit(reader.currentChar()) || reader.currentChar() == '.') {
             //we have a number
@@ -349,11 +353,7 @@ public class Tokenizer {
         }
     }
 
-    private Token NameToToken(String Name) {
-
-        if (Name == "") {
-            return Token.ttUnknown;
-        }
+    private Token NameToToken(String Name, Reference<Object> data) {
 
         Name = Name.toUpperCase();
 
@@ -394,6 +394,10 @@ public class Tokenizer {
                 }
                 break;
             case 'F':
+                if ("FALSE".equals(Name)) {
+                    data.setValue(false);
+                    return Token.ttValue;
+                }
                 if ("FOR".equals(Name)) {
                     return Token.ttFor;
                 }
@@ -435,8 +439,18 @@ public class Tokenizer {
                 if ("THROW".equals(Name)) {
                     return Token.ttThrow;
                 }
+                if ("TRUE".equals(Name)) {
+                    data.setValue(true);
+                    return Token.ttValue;
+                }
                 if ("TRY".equals(Name)) {
                     return Token.ttTry;
+                }
+                break;
+            case 'N':
+                if ("NULL".equals(Name)) {
+                    data.setValue(null);
+                    return Token.ttValue;
                 }
                 break;
             //case 'U':

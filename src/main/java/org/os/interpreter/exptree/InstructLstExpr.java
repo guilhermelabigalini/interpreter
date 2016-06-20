@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author guilherme
  */
-public abstract class InstructLstExpr extends Expr {
+public class InstructLstExpr extends Expr {
 
     protected List<Expr> FInstructList;
     protected List<Expr> FInitList;
@@ -22,13 +22,14 @@ public abstract class InstructLstExpr extends Expr {
     protected Hashtable<String, Value> Variables;
 
     public InstructLstExpr() {
-        this.FInstructList = new ArrayList<>();
-        this.FAvaVaribles = new HashSet<>();
-        this.FInitList = new ArrayList<>();
+        this(null);
     }
 
     public InstructLstExpr(Expr parent) {
         super(parent);
+        this.FInstructList = new ArrayList<>();
+        this.FAvaVaribles = new HashSet<>();
+        this.FInitList = new ArrayList<>();
     }
 
     public void AddItem(Expr Data) {
@@ -67,6 +68,30 @@ public abstract class InstructLstExpr extends Expr {
         }
 
         throw new RuntimeException("Unable to resolve run-time variable: " + name);
+    }
+
+    protected void ExecInstructions() throws ExecutionSignalException {
+        // init the variables 
+        for (Expr e : this.FInitList) {
+            e.Exec();
+        }
+
+        // run the commands
+        for (Expr e : this.FInstructList) {
+            e.Exec();
+        }
+    }
+
+    @Override
+    public void Exec() throws ExecutionSignalException {
+
+        BeforeExec();
+
+        try {
+            ExecInstructions();
+        } finally {
+            AfterExec();
+        }
     }
 
     @Override

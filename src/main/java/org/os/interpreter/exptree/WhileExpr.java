@@ -9,11 +9,32 @@ package org.os.interpreter.exptree;
  *
  * @author guilherme
  */
-public class WhileExpr extends InstructLstExpr {
+public class WhileExpr extends ConditionalExpr {
+
+    public WhileExpr(Expr parent, CustomEvalExpr Condition) {
+        super(parent, Condition);
+    }
 
     @Override
-    public void Exec() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void Exec() throws ExecutionSignalException {
+        BeforeExec();
+
+        try {
+            CustomEvalExpr condition = this.getCondition();
+            
+            while (condition.Eval().asBoolean())
+            {
+                try {
+                    ExecInstructions();
+                } catch (BreakSignalException e) {
+                    return;
+                } catch (ContinueSignalException e) {
+                    // Do nothing... 
+                } 
+            }
+        } finally {
+            AfterExec();
+        }
     }
-    
+
 }

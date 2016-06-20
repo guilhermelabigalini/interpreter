@@ -5,7 +5,6 @@ package org.os.interpreter;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author guilherme
@@ -50,7 +49,7 @@ public class Error {
     public static final String EFUNCNAME = "Error (%d): function name expected but not found.";
     public static final String ERETURNFUNC = "Error (%d): return statement must be inside an function.";
     public static final String EINVBREAKPOS = "Error (%d): \"break\" statement must to be inside a loop.";
-    public static final String EINVCONTPOS = "Error (%d): \"continue\" statement must to be inside a loop." ;
+    public static final String EINVCONTPOS = "Error (%d): \"continue\" statement must to be inside a loop.";
 
     private final int lineNumber;
     private final String message;
@@ -66,6 +65,11 @@ public class Error {
 
     public String getMessage() {
         return message;
-    } 
+    }
+
+    @Override
+    public String toString() {
+        return String.format(this.message, this.lineNumber);
+    }
 
 }

@@ -56,6 +56,18 @@ public class TokenizerTest {
     }
 
     @Test
+    public void parse_comments_true_false_null() {
+        StreamToken[] tokens = getTokens(" true false null ");
+
+        assertEquals(tokens[0].getToken(), Token.ttValue);
+        assertEquals(tokens[0].getData(), true);
+        assertEquals(tokens[1].getToken(), Token.ttValue);
+        assertEquals(tokens[1].getData(), false);
+        assertEquals(tokens[2].getToken(), Token.ttValue);
+        assertEquals(tokens[2].getData(), null);
+    }
+
+    @Test
     public void parse_comments_integer() {
         StreamToken[] tokens = getTokens(" /* my comments */ 123");
 
@@ -106,10 +118,10 @@ public class TokenizerTest {
 
         assertEquals(tokens[0].getToken(), Token.ttValue);
         assertEquals(tokens[0].getData(), 0xFF);
-               
+
         assertEquals(tokens[1].getToken(), Token.ttValue);
         assertEquals(tokens[1].getData(), 0x123);
-        
+
         assertEquals(tokens[2].getToken(), Token.ttEof);
     }
 
@@ -136,16 +148,17 @@ public class TokenizerTest {
     public void parse_keyword() {
         StreamToken[] tokens = getTokens("BREAK  CASE CONTINUE CATCH DO DEFAULT ELSE FOR FUNCTION FINALLY IF RETURN SWITCH THROW TRY VAR WHILE ");
         Token[] tks = new Token[]{
-            Token.ttBreak, Token.ttCase, 
-            Token.ttContinue, Token.ttCatch, Token.ttDo, Token.ttDefault, 
-            Token.ttElse, Token.ttFor, Token.ttFunction, Token.ttFinally, 
-            Token.ttIf, Token.ttReturn, Token.ttSwitch, Token.ttThrow, Token.ttTry, 
+            Token.ttBreak, Token.ttCase,
+            Token.ttContinue, Token.ttCatch, Token.ttDo, Token.ttDefault,
+            Token.ttElse, Token.ttFor, Token.ttFunction, Token.ttFinally,
+            Token.ttIf, Token.ttReturn, Token.ttSwitch, Token.ttThrow, Token.ttTry,
             Token.ttVar, Token.ttWhile, Token.ttEof
         };
 
         assertEquals(tokens.length, tks.length);
-        for (int i = 0; i < tokens.length; i++)
+        for (int i = 0; i < tokens.length; i++) {
             assertEquals(tokens[i].getToken(), tks[i]);
+        }
     }
 
     @Test

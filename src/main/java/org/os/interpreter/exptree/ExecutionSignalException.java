@@ -9,15 +9,6 @@ package org.os.interpreter.exptree;
  *
  * @author guilherme
  */
-public class ProcExpr extends InstructLstExpr {
-
-    public ProcExpr() {
-        this(null);
-    }
-
-    public ProcExpr(Expr parent) {
-        super(parent);
-    }
-
-
+public class ExecutionSignalException extends Exception {
+    
 }

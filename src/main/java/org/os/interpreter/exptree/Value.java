@@ -5,11 +5,13 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.RuntimeInterpreterException;
+
 /**
  *
  * @author guilherme
  */
-public class Value {
+public class Value implements Comparable<Value> {
 
     private Object value;
 
@@ -52,15 +54,42 @@ public class Value {
         return new Value(r);
     }
 
+    public Value mod(Value v) {
+        Object r = (Integer) this.value % (Integer) v.value;
+        return new Value(r);
+    }
+
     @Override
     protected Value clone() {
         return new Value(this.value);
     }
 
-    
     @Override
     public String toString() {
         return "Value{" + "value=" + value + '}';
+    }
+
+    public boolean equals(Value obj) {
+        return this.value.equals(obj.value);
+    }
+
+    boolean asBoolean() {
+        if (value instanceof Boolean) {
+            return (boolean) value;
+        }
+
+        if (value instanceof Number) {
+            return ((Number) value).intValue() > 0;
+        }
+
+        return false;
+
+        //throw new RuntimeInterpreterException("Unable to resolve expression as boolean.");
+    }
+
+    @Override
+    public int compareTo(Value o) {
+        return ((Comparable) this.value).compareTo(o.getValue());
     }
 
 }

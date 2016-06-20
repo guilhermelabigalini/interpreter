@@ -1,0 +1,14 @@
+var a;
+var b;
+
+if (true) {
+    a = 1;
+} else {
+    a = 2;
+}
+
+if (false) {
+    b = 1;
+} else {
+    b = 2;
+}

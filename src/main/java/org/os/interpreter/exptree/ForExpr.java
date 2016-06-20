@@ -9,6 +9,10 @@ package org.os.interpreter.exptree;
  *
  * @author guilherme
  */
-public class ForExpr extends WhileExpr {
+public class ForExpr extends ConditionalExpr {
+
+    public ForExpr(Expr parent, CustomEvalExpr Condition) {
+        super(parent, Condition);
+    }
     
 }

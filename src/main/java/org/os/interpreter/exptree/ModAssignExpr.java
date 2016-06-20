@@ -14,5 +14,10 @@ public class ModAssignExpr extends AssignExpr {
     public ModAssignExpr(Expr parent, CustomEvalExpr EvalExpr, String name) {
         super(parent, EvalExpr, name);
     }
-    
+
+    @Override
+    public void Exec() {
+        Value v = this.getCurrentValue();
+        v.setValue(v.mod(this.getEvalExpr().Eval()));
+    }
 }

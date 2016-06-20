@@ -11,9 +11,11 @@ package org.os.interpreter.exptree;
  */
 public class BiggerExpr extends TwoOpsExpr {
 
+
     @Override
     public Value Eval() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int cp = this.getX().Eval().compareTo(this.getY().Eval());
+        return new Value(cp > 0);
     }
     
 }

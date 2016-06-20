@@ -5,10 +5,46 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.RuntimeInterpreterException;
+
 /**
  *
  * @author guilherme
  */
-public class IfExpr extends WhileExpr {
-    
+public class IfExpr extends ConditionalExpr {
+
+    private ProcExpr ElseExpr;
+
+    public IfExpr(Expr parent, CustomEvalExpr Condition) {
+        super(parent, Condition);
+    }
+
+    public ProcExpr getElseExpr() {
+        if (ElseExpr == null) {
+            ElseExpr = new ProcExpr(this);
+        }
+
+        return ElseExpr;
+    }
+
+    @Override
+    public void Exec() throws ExecutionSignalException {
+
+        BeforeExec();
+
+        try {
+
+            Value contitionResult = this.getCondition().Eval();
+
+            if (contitionResult.asBoolean()) {
+                super.Exec();
+            } else if (ElseExpr != null) {
+                ElseExpr.Exec();
+            }
+
+        } finally {
+            AfterExec();
+        }
+    }
+
 }

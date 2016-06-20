@@ -13,7 +13,7 @@ public class BoolOrExpr extends TwoOpsExpr {
 
     @Override
     public Value Eval() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Value(this.getX().Eval().asBoolean() || this.getY().Eval().asBoolean());
     }
-    
+
 }

@@ -6,7 +6,9 @@
 package org.os.interpreter;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -19,9 +21,11 @@ public class ParseException extends Exception {
     public Collection<Error> getErrors() {
         return errors;
     }
-    
-    public ParseException(Collection<Error> errors){
-        super("Total errors is: " + errors.size());
+
+    public ParseException(List<Error> errors) {
+
+        super("Total errors is: " + errors.size() + "\n" + String.join("", errors.stream().map(e -> e.toString()).collect(Collectors.toList())));;
+        
         this.errors = errors;
     }
 }
