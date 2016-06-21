@@ -1,0 +1,13 @@
+var a = 10;
+var r = 0;
+
+do
+{
+    a--;
+    if (a % 2 == 0)
+    {
+        continue;
+    }   
+    r++;
+}
+while (a > 0);

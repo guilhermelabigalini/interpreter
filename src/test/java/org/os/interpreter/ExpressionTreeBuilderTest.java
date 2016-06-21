@@ -16,7 +16,7 @@ import org.os.interpreter.exptree.Value;
  *
  * @author guilherme
  */
-public class InterpreterTest {
+public class ExpressionTreeBuilderTest {
 
     private String loadResourceAsString(String fileName) throws IOException {
         try (Scanner scanner = new Scanner(getClass().getClassLoader().getResourceAsStream(fileName))) {
@@ -29,7 +29,7 @@ public class InterpreterTest {
     private ProcExpr exec(String path) throws Exception {
         String code = loadResourceAsString(path);
 
-        Interpreter it = new Interpreter(code);
+        ExpressionTreeBuilder it = new ExpressionTreeBuilder(code);
         ProcExpr procedure = it.compile();
 
         procedure.Exec();
@@ -261,6 +261,103 @@ public class InterpreterTest {
         v = procedure.getVariable("r");
         assertEquals(10, v.getValue());
     }
+
+    @Test
+    public void t011_while_break() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t011_while_break.kpl");
+        Value v;
+
+        v = procedure.getVariable("a");
+        assertEquals(5, v.getValue());
+
+        v = procedure.getVariable("r");
+        assertEquals(4, v.getValue());
+    }
+
+    @Test
+    public void t012_while_continue() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t012_while_continue.kpl");
+        Value v;
+
+        v = procedure.getVariable("a");
+        assertEquals(0, v.getValue());
+
+        v = procedure.getVariable("r");
+        assertEquals(5, v.getValue());
+    }
+
+    @Test
+    public void t013_dowhile() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t013_dowhile.kpl");
+        Value v;
+
+        v = procedure.getVariable("a");
+        assertEquals(0, v.getValue());
+
+        v = procedure.getVariable("r");
+        assertEquals(15, v.getValue());
+    }
+
+    @Test
+    public void t014_dowhile_break() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t014_dowhile_break.kpl");
+        Value v;
+
+        v = procedure.getVariable("a");
+        assertEquals(6, v.getValue());
+
+        v = procedure.getVariable("r");
+        assertEquals(3, v.getValue());
+    }
+
+    @Test
+    public void t015_dowhile_continue() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t015_dowhile_continue.kpl");
+        Value v;
+
+        v = procedure.getVariable("a");
+        assertEquals(0, v.getValue());
+
+        v = procedure.getVariable("r");
+        assertEquals(5, v.getValue());
+    }
+
+    @Test
+    public void t016_for() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t016_for.kpl");
+        Value v;
+
+        v = procedure.getVariable("n");
+        assertEquals(5, v.getValue());
+
+        v = procedure.getVariable("r");
+        assertEquals(120, v.getValue());
+    }
+
+    @Test
+    public void t017_for_break() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t017_for_break.kpl");
+        Value v;
+
+        v = procedure.getVariable("i");
+        assertEquals(5, v.getValue());
+
+        v = procedure.getVariable("r");
+        assertEquals(4, v.getValue());
+    }
+
+    @Test
+    public void t018_for_continue() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t018_for_continue.kpl");
+        Value v;
+
+        v = procedure.getVariable("i");
+        assertEquals(11, v.getValue());
+
+        v = procedure.getVariable("r");
+        assertEquals(5, v.getValue());
+    }
+
 //
 //    @Test
 //    public void compile() throws Exception, ParseException {

@@ -11,6 +11,10 @@ package org.os.interpreter.exptree;
  */
 public class BreakExpr extends Expr {
 
+    public BreakExpr(Expr parent) {
+        super(parent);
+    }
+
     @Override
     public void Exec() throws ExecutionSignalException {
         throw new BreakSignalException();

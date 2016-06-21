@@ -11,10 +11,13 @@ package org.os.interpreter.exptree;
  */
 public class ContinueExpr extends Expr {
 
+    public ContinueExpr(Expr parent) {
+        super(parent);
+    }
+
     @Override
-    public void Exec()  throws ExecutionSignalException {
+    public void Exec() throws ExecutionSignalException {
         throw new ContinueSignalException();
     }
 
-    
 }

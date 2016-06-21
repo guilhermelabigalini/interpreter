@@ -14,19 +14,18 @@ public abstract class EvalExpr extends CustomEvalExpr {
     private CustomEvalExpr x;
 
     public EvalExpr() {
-        
+
     }
 
     public EvalExpr(CustomEvalExpr x) {
         this.x = x;
     }
 
-    public CustomEvalExpr getX() {
-        return x;
-    }
-
     public void setX(CustomEvalExpr x) {
         this.x = x;
     }
 
+    public CustomEvalExpr getX() {
+        return x;
+    }
 }

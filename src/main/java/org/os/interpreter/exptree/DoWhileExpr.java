@@ -14,5 +14,25 @@ public class DoWhileExpr extends ConditionalExpr {
     public DoWhileExpr(Expr parent, CustomEvalExpr Condition) {
         super(parent, Condition);
     }
-    
+
+    @Override
+    public void Exec() throws ExecutionSignalException {
+        BeforeExec();
+
+        try {
+            CustomEvalExpr condition = this.getCondition();
+
+            do {
+                try {
+                    ExecInstructions();
+                } catch (BreakSignalException e) {
+                    return;
+                } catch (ContinueSignalException e) {
+                    // Do nothing... 
+                }
+            } while (condition.Eval().asBoolean());
+        } finally {
+            AfterExec();
+        }
+    }
 }

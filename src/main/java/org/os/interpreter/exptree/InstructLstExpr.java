@@ -6,8 +6,8 @@
 package org.os.interpreter.exptree;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -19,7 +19,7 @@ public class InstructLstExpr extends Expr {
     protected List<Expr> FInstructList;
     protected List<Expr> FInitList;
     protected HashSet<String> FAvaVaribles;
-    protected Hashtable<String, Value> Variables;
+    protected HashMap<String, Value> Variables;
 
     public InstructLstExpr() {
         this(null);
@@ -98,7 +98,7 @@ public class InstructLstExpr extends Expr {
     public void BeforeExec() {
         super.BeforeExec();
 
-        this.Variables = new Hashtable<>(FAvaVaribles.size());
+        this.Variables = new HashMap<>(FAvaVaribles.size());
         for (String name : FAvaVaribles) {
             this.Variables.put(name, new Value());
         }

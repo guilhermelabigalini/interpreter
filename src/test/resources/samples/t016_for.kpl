@@ -1,0 +1,7 @@
+var i, r, n;
+
+n = 5;
+r = 1;
+
+for (i = 2; i <= n; i = i + 1)
+   r = r * i;

@@ -10,13 +10,17 @@ import org.os.interpreter.exptree.BiggerEqualExpr;
 import org.os.interpreter.exptree.BiggerExpr;
 import org.os.interpreter.exptree.BoolAndExpr;
 import org.os.interpreter.exptree.BoolOrExpr;
+import org.os.interpreter.exptree.BreakExpr;
 import org.os.interpreter.exptree.ConstExpr;
+import org.os.interpreter.exptree.ContinueExpr;
 import org.os.interpreter.exptree.CustomEvalExpr;
 import org.os.interpreter.exptree.CustomIncVarible;
 import org.os.interpreter.exptree.DivAssignExpr;
 import org.os.interpreter.exptree.DivExpr;
+import org.os.interpreter.exptree.DoWhileExpr;
 import org.os.interpreter.exptree.EqualExpr;
 import org.os.interpreter.exptree.Expr;
+import org.os.interpreter.exptree.ForExpr;
 import org.os.interpreter.exptree.FuncExpr;
 import org.os.interpreter.exptree.IfExpr;
 import org.os.interpreter.exptree.InstructLstExpr;
@@ -55,11 +59,11 @@ import org.os.interpreter.token.Tokenizer;
  *
  * @author guilherme
  */
-public class Interpreter {
+public class ExpressionTreeBuilder {
 
     private static final int MIN_OP_LEVEL = 1;
 
-    private Tokenizer FTokenizer;
+    private final Tokenizer FTokenizer;
     int FLastExprLine;
     boolean FReadingFunction;
     private HashMap<String, Expr> FUserFunctions;
@@ -70,7 +74,7 @@ public class Interpreter {
 
     int loopCount = 0;
 
-    public Interpreter(String source) {
+    public ExpressionTreeBuilder(String source) {
         this.errors = new ArrayList<>();
         this.FTokenizer = new Tokenizer(source);
         this.FLastTkn = new StreamToken(Token.ttUnknown);
@@ -80,6 +84,7 @@ public class Interpreter {
 
         FUserFunctions = new HashMap<>();
         procExpr = new ProcExpr();
+        loopCount = 0;
 
         if (!ReadProc(procExpr)) {
             throw new ParseException(this.errors);
@@ -92,15 +97,14 @@ public class Interpreter {
         errors.add(new Error(FTokenizer.getCurrentLine(), msg));
     }
 
-    boolean ReadProc(InstructLstExpr Expr) {
+    private boolean ReadProc(InstructLstExpr Expr) {
         boolean b = false;
         while (FLastTkn.getToken() != Token.ttEof && (b = ReadStmnt(Expr)) == true)
             ;
         return b;
     }
 
-    boolean ReadStmnt(InstructLstExpr Expr) {
-        loopCount = 0;
+    private boolean ReadStmnt(InstructLstExpr Expr) {
         StreamToken tkn;
         boolean tmpR;
 
@@ -117,7 +121,7 @@ public class Interpreter {
                 loopCount++;
                 tmpR = ReadWhile(Expr);
                 loopCount--;
-                return tmpR;/*
+                return tmpR;
             case ttDo:
                 loopCount++;
                 tmpR = ReadDoWhile(Expr);
@@ -127,7 +131,7 @@ public class Interpreter {
                 loopCount++;
                 tmpR = ReadFor(Expr);
                 loopCount--;
-                return tmpR;*/
+                return tmpR;
             case ttIf:
                 return ReadIf(Expr);
             /*case ttSwitch:
@@ -146,7 +150,7 @@ public class Interpreter {
                 FReadingFunction = false;
                 return tmpR;
             case ttReturn:
-                return ReadReturn();
+                return ReadReturn();*/
             case ttBreak:
                 if (loopCount <= 0) {
                     logError(Error.EINVBREAKPOS);
@@ -168,7 +172,7 @@ public class Interpreter {
                     return false;
                 }
                 Expr.AddItem(new ContinueExpr(Expr));
-                return true;
+                return true;/*
             case ttData:
                 // TODO: Expr.AddItem(new COutputDataExpr(Expr, (char *) tkn.Data));
                 return true;
@@ -254,8 +258,6 @@ public class Interpreter {
             Reference<Expr> Result, ExpressionStep ExprStep) {
 
         String Name;
-        //VARIBLEPOS Pos, *lpPos;
-        int Index;
         CustomEvalExpr EvalExpr;
         FuncExpr FuncExpr;
         UserFuncCaller UserFuncExpr;
@@ -844,5 +846,101 @@ public class Interpreter {
             logError(Error.EBLEFT);
             return false;
         }
+    }
+
+    private boolean ReadDoWhile(InstructLstExpr Expr) {
+        DoWhileExpr DoWhileExpr;
+        Reference<CustomEvalExpr> Condition = new Reference<>();
+        StreamToken tkn;
+
+        DoWhileExpr = new DoWhileExpr(Expr, null);
+
+        if (!ReadBlock(DoWhileExpr, false)) {
+            return false;
+        }
+
+        if ((tkn = FTokenizer.GetNextToken()).getToken() != Token.ttWhile) {
+            /* gerar erro: while esperado mas nao foi encontrado */
+            logError(Error.EWHILE);
+            return false;
+        }
+
+        if ((tkn = FTokenizer.GetNextToken()).getToken() != Token.ttBLeft) {
+            //"(" esperado mas nao encontrado
+            logError(Error.EBLEFT);
+            return false;
+        }
+
+        if (!LeComNivels(Expr, Condition, ExpressionStep.esSubExpr)) {
+            //erro ao ler condicao, erro ja gerado
+            return false;
+        }
+
+        DoWhileExpr.setCondition(Condition.getValue());
+
+        if ((tkn = FTokenizer.GetNextToken()).getToken() != Token.ttSemicolon) {
+            //";" esperado mas nao encontrado
+            logError(Error.ESEMICOLON);
+            return false;
+        }
+        Expr.AddItem(DoWhileExpr);
+        return true;
+    }
+
+    private boolean ReadFor(InstructLstExpr Expr) {
+        StreamToken tkn;
+        ForExpr ForExpr;
+        Reference<CustomEvalExpr> Condition = new Reference<>();
+        Reference<Expr> InitExpr = new Reference<>();
+        Reference<Expr> IncExpr = new Reference<>();
+
+        tkn = FTokenizer.GetNextToken();
+        if (tkn.getToken() != Token.ttBLeft) {
+            //for tem que ser seguido de "("
+            logError(Error.EBLEFTFOR);
+            return false;
+        }
+
+        tkn = FTokenizer.GetNextToken();
+        if (tkn.getToken() != Token.ttSemicolon) {
+            if (tkn.getToken() != Token.ttName) {
+                logError(Error.EVARNAMENTFND);
+                return false;
+            }
+            if (!ReadExpr(Expr,  tkn,  InitExpr, ExpressionStep.esNone)) {
+                return false;
+            }
+        }
+
+        if (!LeComNivels(Expr, Condition, ExpressionStep.esNone)) {
+            //erro ao ler expressao de condicao, erro gerado
+            return false;
+        }
+        /*TODO: aki esta deixando a condicao do "for" obrigatoria, melhorar isso
+        else if (Condition->GetCount() == 0)
+        {
+           delete Condition;
+           Condition = NULL;
+        } */
+
+        tkn = FTokenizer.GetNextToken();
+        if (tkn.getToken() != Token.ttBRight) {
+            if (tkn.getToken() != Token.ttName) {
+                logError(Error.EVARNAMENTFND);
+                return false;
+            }
+            if (!ReadExpr(Expr,  tkn, IncExpr, ExpressionStep.esSubExpr)) {
+                return false;
+            }
+        }
+
+        ForExpr = new ForExpr(Expr, InitExpr.getValue(), Condition.getValue(), IncExpr.getValue());
+
+        if (ReadBlock(ForExpr, false)) {
+            Expr.AddItem(ForExpr);
+            return true;
+        }
+
+        return false;
     }
 }

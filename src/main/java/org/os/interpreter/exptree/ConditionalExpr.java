@@ -11,7 +11,7 @@ package org.os.interpreter.exptree;
  */
 public class ConditionalExpr extends InstructLstExpr {
     
-    private final CustomEvalExpr condition;
+    private CustomEvalExpr condition;
 
     public ConditionalExpr(Expr parent, CustomEvalExpr condition) {
         super(parent);
@@ -20,6 +20,10 @@ public class ConditionalExpr extends InstructLstExpr {
 
     public CustomEvalExpr getCondition() {
         return condition;
+    }
+
+    public void setCondition(CustomEvalExpr condition) {
+        this.condition = condition;
     }
     
 }
