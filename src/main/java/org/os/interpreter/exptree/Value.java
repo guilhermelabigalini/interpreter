@@ -5,8 +5,6 @@
  */
 package org.os.interpreter.exptree;
 
-import org.os.interpreter.RuntimeInterpreterException;
-
 /**
  *
  * @author guilherme
@@ -82,9 +80,7 @@ public class Value implements Comparable<Value> {
             return ((Number) value).intValue() > 0;
         }
 
-        return false;
-
-        //throw new RuntimeInterpreterException("Unable to resolve expression as boolean.");
+        return value != null;
     }
 
     @Override

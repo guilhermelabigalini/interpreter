@@ -45,8 +45,14 @@ public class InstructLstExpr extends Expr {
             return true;
         }
 
-        if (searchInParent && this.getParent() instanceof InstructLstExpr) {
-            return ((InstructLstExpr) this.getParent()).ExitsVar(name, searchInParent);
+        if (searchInParent) {
+            InstructLstExpr pil = this.getInstructLstExprParent();
+
+            if (pil == null) {
+                return false;
+            }
+
+            return pil.ExitsVar(name, searchInParent);
         }
 
         return false;
@@ -63,11 +69,26 @@ public class InstructLstExpr extends Expr {
             return result;
         }
 
-        if (this.getParent() instanceof InstructLstExpr) {
-            return ((InstructLstExpr) this.getParent()).getVariable(name);
+        InstructLstExpr pil = this.getInstructLstExprParent();
+                
+        if (pil != null) {
+            return pil.getVariable(name);
         }
 
         throw new RuntimeException("Unable to resolve run-time variable: " + name);
+    }
+
+    public InstructLstExpr getInstructLstExprParent() {
+        Expr p = this.getParent();
+        while ((p != null) && (!(p instanceof InstructLstExpr))) {
+            p = p.getParent();
+        }
+
+        if (p == null) {
+            return null;
+        }
+
+        return (InstructLstExpr) p;
     }
 
     protected void ExecInstructions() throws ExecutionSignalException {

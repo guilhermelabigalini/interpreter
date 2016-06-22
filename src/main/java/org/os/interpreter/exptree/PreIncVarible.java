@@ -15,7 +15,7 @@ public class PreIncVarible extends CustomIncVarible {
     public Value Eval() {
         // x++
         // return the value, then descremen 
-        CustomEvalExpr x = this.getX();
+        EvaluableExpr x = this.getX();
         Value v = x.Eval();
         v.setValue(v.sum(new Value(1)));
         return v;

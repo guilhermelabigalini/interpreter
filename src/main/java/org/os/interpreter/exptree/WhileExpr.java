@@ -11,7 +11,7 @@ package org.os.interpreter.exptree;
  */
 public class WhileExpr extends ConditionalExpr {
 
-    public WhileExpr(Expr parent, CustomEvalExpr Condition) {
+    public WhileExpr(Expr parent, EvaluableExpr Condition) {
         super(parent, Condition);
     }
 
@@ -20,7 +20,7 @@ public class WhileExpr extends ConditionalExpr {
         BeforeExec();
 
         try {
-            CustomEvalExpr condition = this.getCondition();
+            EvaluableExpr condition = this.getCondition();
             
             while (condition.Eval().asBoolean())
             {

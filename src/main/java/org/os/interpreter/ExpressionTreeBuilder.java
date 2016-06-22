@@ -13,7 +13,7 @@ import org.os.interpreter.exptree.BoolOrExpr;
 import org.os.interpreter.exptree.BreakExpr;
 import org.os.interpreter.exptree.ConstExpr;
 import org.os.interpreter.exptree.ContinueExpr;
-import org.os.interpreter.exptree.CustomEvalExpr;
+import org.os.interpreter.exptree.EvaluableExpr;
 import org.os.interpreter.exptree.CustomIncVarible;
 import org.os.interpreter.exptree.DivAssignExpr;
 import org.os.interpreter.exptree.DivExpr;
@@ -39,6 +39,7 @@ import org.os.interpreter.exptree.ProcExpr;
 import org.os.interpreter.exptree.SmallerEqualExpr;
 import org.os.interpreter.exptree.SmallerExpr;
 import org.os.interpreter.exptree.SubExpr;
+import org.os.interpreter.exptree.SwitchExpr;
 import org.os.interpreter.exptree.TimesAssignExpr;
 import org.os.interpreter.exptree.TimesExpr;
 import org.os.interpreter.exptree.TwoOpsExpr;
@@ -72,7 +73,8 @@ public class ExpressionTreeBuilder {
     private StreamToken FLastTkn;
     private final List<Error> errors;
 
-    int loopCount = 0;
+    private int loopCount = 0;
+    private int caseCount = 0;
 
     public ExpressionTreeBuilder(String source) {
         this.errors = new ArrayList<>();
@@ -85,6 +87,7 @@ public class ExpressionTreeBuilder {
         FUserFunctions = new HashMap<>();
         procExpr = new ProcExpr();
         loopCount = 0;
+        caseCount = 0;
 
         if (!ReadProc(procExpr)) {
             throw new ParseException(this.errors);
@@ -134,8 +137,12 @@ public class ExpressionTreeBuilder {
                 return tmpR;
             case ttIf:
                 return ReadIf(Expr);
-            /*case ttSwitch:
-                return ReadSwitch(Expr);
+            case ttSwitch:
+                caseCount++;
+                tmpR = ReadSwitch(Expr);
+                caseCount--;
+                return tmpR;
+            /*
             case ttTry:
                 return ReadTry(Expr);
             case ttThrow:
@@ -152,7 +159,7 @@ public class ExpressionTreeBuilder {
             case ttReturn:
                 return ReadReturn();*/
             case ttBreak:
-                if (loopCount <= 0) {
+                if (loopCount <= 0 && caseCount <= 0) {
                     logError(Error.EINVBREAKPOS);
                     return false;
                 }
@@ -163,7 +170,7 @@ public class ExpressionTreeBuilder {
                 Expr.AddItem(new BreakExpr(Expr));
                 return true;
             case ttContinue:
-                if (loopCount <= 0) {
+                if (loopCount <= 0 && caseCount <= 0) {
                     logError(Error.EINVCONTPOS);
                     return false;
                 }
@@ -185,6 +192,81 @@ public class ExpressionTreeBuilder {
                 logError(Error.ESTMNT);
                 return false;
         }
+    }
+
+    private boolean ReadSwitch(InstructLstExpr Expr) {
+        SwitchExpr switchExpr;
+        Reference<EvaluableExpr> EvalExpr = new Reference<>();
+        Reference<EvaluableExpr> CaseItem = new Reference<>();
+        SwitchExpr.SwitchItem switchItem;
+        StreamToken tkn;
+
+        tkn = FTokenizer.GetNextToken();
+
+        if (tkn.getToken() != Token.ttBLeft) {
+            //switch nao seguido de parentes, gerar erro
+            logError(Error.EBLEFTSWITCH);
+            return false;
+        }
+
+        if (!LeComNivels(Expr, EvalExpr, ExpressionStep.esSubExpr)) //erro ao ler condicao, erro ja foi gerado
+        {
+            return false;
+        }
+
+        tkn = FTokenizer.GetNextToken();
+        if (tkn.getToken() != Token.ttBegin) {
+            logError(Error.ESWITCHBGN);
+            return false;
+        }
+
+        tkn = FTokenizer.GetNextToken();
+
+        switchExpr = new SwitchExpr(Expr, EvalExpr.getValue());
+
+        while (tkn.getToken() != Token.ttEnd) {
+            if (tkn.getToken() == Token.ttCase) {
+                switchItem = new SwitchExpr.SwitchItem(switchExpr);
+                do {
+                    CaseItem.setValue(null);
+                    if (!LeComNivels(Expr, CaseItem, ExpressionStep.esCase)) //erro ao ler condicao, erro ja foi gerado
+                    {
+                        return false;
+                    }
+                    switchItem.getConditions().add(CaseItem.getValue());
+                } while (FLastTkn.getToken() == Token.ttComma);
+
+                if (FLastTkn.getToken() != Token.ttTwoPoints) {
+                    logError(Error.E2POINTS);
+                    return false;
+                }
+
+                if (!ReadBlock(switchItem.getProcExpr(), false)) {
+                    return false;
+                }
+                switchExpr.getCases().add(switchItem);
+
+            } else if (tkn.getToken() == Token.ttDefault) {
+                if (switchExpr.isDefaultBlockDefined()) {
+                    logError(Error.EDEFEXISTS);
+                    return false;
+                }
+                tkn = FTokenizer.GetNextToken();
+                if (tkn.getToken() != Token.ttTwoPoints) {
+                    logError(Error.E2POINTS);
+                    return false;
+                }
+                if (!ReadBlock(switchExpr.getDefaultProc(), false)) {
+                    return false;
+                }
+            } else {
+                logError(Error.ECASESTMNT);
+                return false;
+            }
+            tkn = FTokenizer.GetNextToken();
+        }
+        Expr.AddItem(switchExpr);
+        return true;
     }
 
     private boolean ReadVar(InstructLstExpr Expr, StreamToken CurTkn) {
@@ -258,7 +340,7 @@ public class ExpressionTreeBuilder {
             Reference<Expr> Result, ExpressionStep ExprStep) {
 
         String Name;
-        CustomEvalExpr EvalExpr;
+        EvaluableExpr EvalExpr;
         FuncExpr FuncExpr;
         UserFuncCaller UserFuncExpr;
         AssignExpr AssignExpr;
@@ -278,7 +360,7 @@ public class ExpressionTreeBuilder {
                 //expressao do tipo "varName = ..."
                 if (Expr.ExitsVar(Name, true)) {
                     //a variavel foi encontrada, .·. devemos processar a expressao
-                    Reference<CustomEvalExpr> ref = new Reference<>();
+                    Reference<EvaluableExpr> ref = new Reference<>();
 
                     if (!LeComNivels(Expr, ref, ExprStep)) {
                         return false;
@@ -408,16 +490,16 @@ public class ExpressionTreeBuilder {
         return false;
     }
 
-    private boolean LeComNivels(InstructLstExpr Expr, Reference<CustomEvalExpr> Result, ExpressionStep ExprStep) {
+    private boolean LeComNivels(InstructLstExpr Expr, Reference<EvaluableExpr> Result, ExpressionStep ExprStep) {
 
         TwoOpsExpr Expr2Ops;
         StreamToken tkn;
-        List<CustomEvalExpr> ValuesLst = new ArrayList<>();
+        List<EvaluableExpr> ValuesLst = new ArrayList<>();
         List<Token> OpsLst = new ArrayList<>();
         int i, min;
 
         do {
-            Reference<CustomEvalExpr> refEvalExp = new Reference<>();
+            Reference<EvaluableExpr> refEvalExp = new Reference<>();
 
             if (!LeValor(Expr, refEvalExp)) {
                 return false;
@@ -518,9 +600,9 @@ public class ExpressionTreeBuilder {
         return true;
     }
 
-    private boolean LeValor(InstructLstExpr Expr, Reference<CustomEvalExpr> Result) {
+    private boolean LeValor(InstructLstExpr Expr, Reference<EvaluableExpr> Result) {
         StreamToken tkn;
-        CustomEvalExpr OldR;
+        EvaluableExpr OldR;
         ExpressionOp firstOp = ExpressionOp.opNone, secondOp = ExpressionOp.opNone;
         int i;
 
@@ -748,7 +830,7 @@ public class ExpressionTreeBuilder {
 
     private boolean ReadIf(InstructLstExpr Expr) {
         IfExpr IfExpr;
-        Reference<CustomEvalExpr> Condition = new Reference<>();
+        Reference<EvaluableExpr> Condition = new Reference<>();
         Bookmark Book;
         StreamToken tkn;
 
@@ -823,7 +905,7 @@ public class ExpressionTreeBuilder {
 
     private boolean ReadWhile(InstructLstExpr Expr) {
         WhileExpr WhileExpr;
-        Reference<CustomEvalExpr> Condition = new Reference<>();
+        Reference<EvaluableExpr> Condition = new Reference<>();
         StreamToken tkn;
 
         tkn = FTokenizer.GetNextToken();
@@ -850,7 +932,7 @@ public class ExpressionTreeBuilder {
 
     private boolean ReadDoWhile(InstructLstExpr Expr) {
         DoWhileExpr DoWhileExpr;
-        Reference<CustomEvalExpr> Condition = new Reference<>();
+        Reference<EvaluableExpr> Condition = new Reference<>();
         StreamToken tkn;
 
         DoWhileExpr = new DoWhileExpr(Expr, null);
@@ -890,7 +972,7 @@ public class ExpressionTreeBuilder {
     private boolean ReadFor(InstructLstExpr Expr) {
         StreamToken tkn;
         ForExpr ForExpr;
-        Reference<CustomEvalExpr> Condition = new Reference<>();
+        Reference<EvaluableExpr> Condition = new Reference<>();
         Reference<Expr> InitExpr = new Reference<>();
         Reference<Expr> IncExpr = new Reference<>();
 
@@ -907,7 +989,7 @@ public class ExpressionTreeBuilder {
                 logError(Error.EVARNAMENTFND);
                 return false;
             }
-            if (!ReadExpr(Expr,  tkn,  InitExpr, ExpressionStep.esNone)) {
+            if (!ReadExpr(Expr, tkn, InitExpr, ExpressionStep.esNone)) {
                 return false;
             }
         }
@@ -929,7 +1011,7 @@ public class ExpressionTreeBuilder {
                 logError(Error.EVARNAMENTFND);
                 return false;
             }
-            if (!ReadExpr(Expr,  tkn, IncExpr, ExpressionStep.esSubExpr)) {
+            if (!ReadExpr(Expr, tkn, IncExpr, ExpressionStep.esSubExpr)) {
                 return false;
             }
         }

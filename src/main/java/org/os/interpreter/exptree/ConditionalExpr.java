@@ -11,18 +11,18 @@ package org.os.interpreter.exptree;
  */
 public class ConditionalExpr extends InstructLstExpr {
     
-    private CustomEvalExpr condition;
+    private EvaluableExpr condition;
 
-    public ConditionalExpr(Expr parent, CustomEvalExpr condition) {
+    public ConditionalExpr(Expr parent, EvaluableExpr condition) {
         super(parent);
         this.condition = condition;
     }
 
-    public CustomEvalExpr getCondition() {
+    public EvaluableExpr getCondition() {
         return condition;
     }
 
-    public void setCondition(CustomEvalExpr condition) {
+    public void setCondition(EvaluableExpr condition) {
         this.condition = condition;
     }
     

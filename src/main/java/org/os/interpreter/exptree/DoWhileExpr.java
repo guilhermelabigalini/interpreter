@@ -11,7 +11,7 @@ package org.os.interpreter.exptree;
  */
 public class DoWhileExpr extends ConditionalExpr {
 
-    public DoWhileExpr(Expr parent, CustomEvalExpr Condition) {
+    public DoWhileExpr(Expr parent, EvaluableExpr Condition) {
         super(parent, Condition);
     }
 
@@ -20,7 +20,7 @@ public class DoWhileExpr extends ConditionalExpr {
         BeforeExec();
 
         try {
-            CustomEvalExpr condition = this.getCondition();
+            EvaluableExpr condition = this.getCondition();
 
             do {
                 try {

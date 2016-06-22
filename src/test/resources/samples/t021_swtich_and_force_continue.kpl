@@ -1,0 +1,21 @@
+var v;
+var r,x;
+
+v = "abc";
+r = 0;
+x = 0;
+
+switch (v) {
+    case "a": {
+        r += 1;
+        break;
+    }
+    case "abc": {
+        r += 2;
+        continue;
+        x = 1;
+    }
+    case "zzz": {
+        r += 3;
+    }
+}

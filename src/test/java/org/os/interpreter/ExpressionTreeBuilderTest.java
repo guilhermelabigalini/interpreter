@@ -50,6 +50,12 @@ public class ExpressionTreeBuilderTest {
 
         v = procedure.getVariable("c");
         assertEquals(123, v.getValue());
+
+        v = procedure.getVariable("d");
+        assertEquals(0xff, v.getValue());
+
+        v = procedure.getVariable("e");
+        assertEquals(035, v.getValue());
     }
 
     @Test
@@ -358,6 +364,56 @@ public class ExpressionTreeBuilderTest {
         assertEquals(5, v.getValue());
     }
 
+    @Test
+    public void t019_swtich() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t019_swtich.kpl");
+        Value v;
+
+        v = procedure.getVariable("r");
+        assertEquals(2, v.getValue());
+
+        v = procedure.getVariable("v");
+        assertEquals("abc", v.getValue());
+    }
+
+    @Test
+    public void t020_swtich_and_continue() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t020_swtich_and_continue.kpl");
+        Value v;
+
+        v = procedure.getVariable("r");
+        assertEquals(5, v.getValue());
+    }
+
+    @Test
+    public void t021_swtich_and_force_continue() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t021_swtich_and_force_continue.kpl");
+        Value v;
+
+        v = procedure.getVariable("r");
+        assertEquals(5, v.getValue());
+
+        v = procedure.getVariable("x");
+        assertEquals(0, v.getValue());
+    }
+
+    @Test
+    public void t022_swtich_default() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t022_swtich_default.kpl");
+        Value v;
+
+        v = procedure.getVariable("r");
+        assertEquals(3, v.getValue());
+    }
+
+    @Test
+    public void t023_swtich_default_case() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t023_swtich_default_case.kpl");
+        Value v;
+
+        v = procedure.getVariable("r");
+        assertEquals(5, v.getValue());
+    }
 //
 //    @Test
 //    public void compile() throws Exception, ParseException {

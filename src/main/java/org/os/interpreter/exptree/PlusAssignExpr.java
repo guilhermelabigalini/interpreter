@@ -11,7 +11,7 @@ package org.os.interpreter.exptree;
  */
 public class PlusAssignExpr extends AssignExpr {
 
-    public PlusAssignExpr(Expr parent, CustomEvalExpr EvalExpr, String name) {
+    public PlusAssignExpr(Expr parent, EvaluableExpr EvalExpr, String name) {
         super(parent, EvalExpr, name);
     }
 

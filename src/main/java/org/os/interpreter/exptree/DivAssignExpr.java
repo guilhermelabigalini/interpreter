@@ -11,7 +11,7 @@ package org.os.interpreter.exptree;
  */
 public class DivAssignExpr extends AssignExpr {
 
-    public DivAssignExpr(Expr parent, CustomEvalExpr EvalExpr, String name) {
+    public DivAssignExpr(Expr parent, EvaluableExpr EvalExpr, String name) {
         super(parent, EvalExpr, name);
     }
 

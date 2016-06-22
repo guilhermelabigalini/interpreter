@@ -9,7 +9,7 @@ package org.os.interpreter.exptree;
  *
  * @author guilherme
  */
-public class ConstExpr extends CustomEvalExpr {
+public class ConstExpr extends EvaluableExpr {
 
     private final Object value;
 

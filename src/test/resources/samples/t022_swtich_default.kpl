@@ -1,0 +1,17 @@
+var v;
+var r;
+
+v = "abc";
+
+switch (v) {
+    case "a": {
+        r = 1;
+        break;
+    }
+    case "b": {
+        r = 2;
+        break;
+    }
+    default: 
+        r = 3;
+}

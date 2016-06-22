@@ -30,4 +30,9 @@ public class StreamToken {
     public Object getData() {
         return data;
     }
+
+    @Override
+    public String toString() {
+        return "StreamToken{" + "token=" + token + ", data=" + data + '}';
+    }
 }

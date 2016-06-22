@@ -9,7 +9,7 @@ package org.os.interpreter.exptree;
  *
  * @author guilherme
  */
-public class FuncExpr extends CustomEvalExpr {
+public class FuncExpr extends EvaluableExpr {
 
     private String name;
 

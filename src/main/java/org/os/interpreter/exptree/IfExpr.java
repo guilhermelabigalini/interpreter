@@ -5,8 +5,6 @@
  */
 package org.os.interpreter.exptree;
 
-import org.os.interpreter.RuntimeInterpreterException;
-
 /**
  *
  * @author guilherme
@@ -15,7 +13,7 @@ public class IfExpr extends ConditionalExpr {
 
     private ProcExpr ElseExpr;
 
-    public IfExpr(Expr parent, CustomEvalExpr Condition) {
+    public IfExpr(Expr parent, EvaluableExpr Condition) {
         super(parent, Condition);
     }
 

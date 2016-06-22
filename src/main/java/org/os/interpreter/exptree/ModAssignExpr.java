@@ -11,7 +11,7 @@ package org.os.interpreter.exptree;
  */
 public class ModAssignExpr extends AssignExpr {
 
-    public ModAssignExpr(Expr parent, CustomEvalExpr EvalExpr, String name) {
+    public ModAssignExpr(Expr parent, EvaluableExpr EvalExpr, String name) {
         super(parent, EvalExpr, name);
     }
 

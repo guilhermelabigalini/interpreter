@@ -11,13 +11,13 @@ package org.os.interpreter.exptree;
  */
 public abstract class TwoOpsExpr extends EvalExpr {
 
-    private CustomEvalExpr y;
+    private EvaluableExpr y;
 
-    public CustomEvalExpr getY() {
+    public EvaluableExpr getY() {
         return y;
     }
 
-    public void setY(CustomEvalExpr y) {
+    public void setY(EvaluableExpr y) {
         this.y = y;
     }
 

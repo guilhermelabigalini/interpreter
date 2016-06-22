@@ -14,7 +14,7 @@ public class ForExpr extends ConditionalExpr {
     private final Expr InitExpr;
     private final Expr IncExpr;
 
-    public ForExpr(InstructLstExpr parent, Expr InitExpr, CustomEvalExpr Condition, Expr IncExpr) {
+    public ForExpr(InstructLstExpr parent, Expr InitExpr, EvaluableExpr Condition, Expr IncExpr) {
         super(parent, Condition);
         this.InitExpr = InitExpr;
         this.IncExpr = IncExpr;
@@ -30,7 +30,7 @@ public class ForExpr extends ConditionalExpr {
                 InitExpr.Exec();
             }
 
-            CustomEvalExpr condition = getCondition();
+            EvaluableExpr condition = getCondition();
             while (condition == null || condition.Eval().asBoolean()) {
 
                 try {

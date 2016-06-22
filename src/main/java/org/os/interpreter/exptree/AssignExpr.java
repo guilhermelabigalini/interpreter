@@ -11,10 +11,10 @@ package org.os.interpreter.exptree;
  */
 public class AssignExpr extends Expr {
 
-    private final CustomEvalExpr EvalExpr;
+    private final EvaluableExpr EvalExpr;
     private final String name;
 
-    public AssignExpr(Expr parent, CustomEvalExpr EvalExpr, String name) {
+    public AssignExpr(Expr parent, EvaluableExpr EvalExpr, String name) {
         super(parent);
         this.EvalExpr = EvalExpr;
         this.name = name;
@@ -24,7 +24,7 @@ public class AssignExpr extends Expr {
         return name;
     }
 
-    public CustomEvalExpr getEvalExpr() {
+    public EvaluableExpr getEvalExpr() {
         return EvalExpr;
     }
 

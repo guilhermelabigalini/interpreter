@@ -9,23 +9,23 @@ package org.os.interpreter.exptree;
  *
  * @author guilherme
  */
-public abstract class EvalExpr extends CustomEvalExpr {
+public abstract class EvalExpr extends EvaluableExpr {
 
-    private CustomEvalExpr x;
+    private EvaluableExpr x;
 
     public EvalExpr() {
 
     }
 
-    public EvalExpr(CustomEvalExpr x) {
+    public EvalExpr(EvaluableExpr x) {
         this.x = x;
     }
 
-    public void setX(CustomEvalExpr x) {
+    public void setX(EvaluableExpr x) {
         this.x = x;
     }
 
-    public CustomEvalExpr getX() {
+    public EvaluableExpr getX() {
         return x;
     }
 }

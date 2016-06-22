@@ -11,7 +11,7 @@ package org.os.interpreter.exptree;
  */
 public class TimesAssignExpr extends AssignExpr {
 
-    public TimesAssignExpr(Expr parent, CustomEvalExpr EvalExpr, String name) {
+    public TimesAssignExpr(Expr parent, EvaluableExpr EvalExpr, String name) {
         super(parent, EvalExpr, name);
     }
 
