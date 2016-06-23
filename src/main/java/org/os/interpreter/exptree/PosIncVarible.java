@@ -9,7 +9,7 @@ package org.os.interpreter.exptree;
  *
  * @author guilherme
  */
-public class PosIncVarible extends CustomIncVarible {
+public class PosIncVarible extends EvalExpr {
 
     public PosIncVarible(EvaluableExpr x) {
         super(x);

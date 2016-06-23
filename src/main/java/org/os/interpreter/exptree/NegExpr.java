@@ -17,7 +17,7 @@ public class NegExpr extends EvalExpr {
 
     @Override
     public Value Eval() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.getX().Eval().times(new Value(-1));
     }
     
 }

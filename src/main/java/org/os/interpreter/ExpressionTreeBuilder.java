@@ -14,11 +14,11 @@ import org.os.interpreter.exptree.BreakExpr;
 import org.os.interpreter.exptree.ConstExpr;
 import org.os.interpreter.exptree.ContinueExpr;
 import org.os.interpreter.exptree.EvaluableExpr;
-import org.os.interpreter.exptree.CustomIncVarible;
 import org.os.interpreter.exptree.DivAssignExpr;
 import org.os.interpreter.exptree.DivExpr;
 import org.os.interpreter.exptree.DoWhileExpr;
 import org.os.interpreter.exptree.EqualExpr;
+import org.os.interpreter.exptree.EvalExpr;
 import org.os.interpreter.exptree.Expr;
 import org.os.interpreter.exptree.ForExpr;
 import org.os.interpreter.exptree.FuncExpr;
@@ -346,7 +346,7 @@ public class ExpressionTreeBuilder {
         String Name;
         EvaluableExpr EvalExpr;
         AssignExpr AssignExpr;
-        CustomIncVarible IncExpr;
+        EvalExpr IncExpr;
 
         Name = (String) CurTkn.getData();
         StreamToken tkn = FTokenizer.GetNextToken();
@@ -1063,10 +1063,11 @@ public class ExpressionTreeBuilder {
             }
         }
         FCurUserFunc = UserFunc;
+        // register the function name to allow recursive use 
+        FUserFunctions.put(funcName, UserFunc);
         if (!ReadBlock(UserFunc.getBody(), true)) {
             return false;
         }
-        FUserFunctions.put(funcName, UserFunc);
         return true;
     }
 

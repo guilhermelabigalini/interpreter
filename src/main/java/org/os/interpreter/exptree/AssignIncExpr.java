@@ -11,9 +11,9 @@ package org.os.interpreter.exptree;
  */
 public class AssignIncExpr extends Expr {
 
-    CustomIncVarible IncExpr;
+    EvalExpr IncExpr;
             
-    public AssignIncExpr(Expr parent, CustomIncVarible IncExpr) {
+    public AssignIncExpr(Expr parent, EvalExpr IncExpr) {
         super(parent);
         this.IncExpr = IncExpr;
     }

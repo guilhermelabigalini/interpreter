@@ -9,7 +9,7 @@ package org.os.interpreter.exptree;
  *
  * @author guilherme
  */
-public class PreDecVarible extends CustomIncVarible {
+public class PreDecVarible extends EvalExpr {
 
     public PreDecVarible(EvaluableExpr x) {
         super(x);

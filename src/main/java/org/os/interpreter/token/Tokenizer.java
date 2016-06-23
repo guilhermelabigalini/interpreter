@@ -15,13 +15,11 @@ import static org.os.interpreter.token.CharHelper.*;
  */
 public class Tokenizer {
 
-    private final String source;
     private final BufferReader reader;
     private int currentLine;
 
     public Tokenizer(String source) {
         currentLine = 1;
-        this.source = source;
         this.reader = new BufferReader(source);
     }
 

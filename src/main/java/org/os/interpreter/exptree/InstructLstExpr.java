@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Stack;
 
 /**
  *
@@ -16,10 +17,11 @@ import java.util.List;
  */
 public class InstructLstExpr extends Expr {
 
-    protected List<Expr> FInstructList;
-    protected List<Expr> FInitList;
-    protected HashSet<String> FAvaVaribles;
-    protected HashMap<String, Value> Variables;
+    private List<Expr> FInstructList;
+    private List<Expr> FInitList;
+    private HashSet<String> FAvaVaribles;
+    private Stack<HashMap<String, Value>> Variables;
+    private HashMap<String, Value> PreviousVariables;
 
     public InstructLstExpr() {
         this(null);
@@ -27,6 +29,7 @@ public class InstructLstExpr extends Expr {
 
     public InstructLstExpr(Expr parent) {
         super(parent);
+        this.Variables = new Stack<>();
         this.FInstructList = new ArrayList<>();
         this.FAvaVaribles = new HashSet<>();
         this.FInitList = new ArrayList<>();
@@ -62,15 +65,31 @@ public class InstructLstExpr extends Expr {
         this.FInitList.add(AssignExpr);
     }
 
-    public Value getVariable(String name) {
-        Value result = this.Variables.get(name);
+    public Value getPreviousVariable(String name) {
+        Value result = this.PreviousVariables.get(name);
 
         if (result != null) {
             return result;
         }
 
         InstructLstExpr pil = this.getInstructLstExprParent();
-                
+
+        if (pil != null) {
+            return pil.getPreviousVariable(name);
+        }
+
+        throw new RuntimeException("Unable to resolve run-time variable: " + name);
+    }
+
+    public Value getVariable(String name) {
+        Value result = this.Variables.peek().get(name);
+
+        if (result != null) {
+            return result;
+        }
+
+        InstructLstExpr pil = this.getInstructLstExprParent();
+
         if (pil != null) {
             return pil.getVariable(name);
         }
@@ -102,7 +121,7 @@ public class InstructLstExpr extends Expr {
             e.Exec();
         }
     }
-    
+
     @Override
     public void Exec() throws ExecutionSignalException {
 
@@ -119,9 +138,10 @@ public class InstructLstExpr extends Expr {
     public void BeforeExec() {
         super.BeforeExec();
 
-        this.Variables = new HashMap<>(FAvaVaribles.size());
+        HashMap<String, Value> currentVars = new HashMap<>(FAvaVaribles.size());
+        this.Variables.push(currentVars);
         for (String name : FAvaVaribles) {
-            this.Variables.put(name, new Value());
+            currentVars.put(name, new Value());
         }
     }
 
@@ -129,6 +149,10 @@ public class InstructLstExpr extends Expr {
     public void AfterExec() {
         super.AfterExec();
 
-        // this.Variables.clear();
+        if (!Variables.empty()) {
+            PreviousVariables = Variables.pop();
+        } else {
+            PreviousVariables = null;
+        }
     }
 }

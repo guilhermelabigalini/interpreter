@@ -37,11 +37,19 @@ public class UserFuncTemp extends InstructLstExpr {
 
     @Override
     public void BeforeExec() {
+        // resolve the parameter values
+        Value[] values = new Value[this.parameters.size()];
+        for (int p = 0; p < this.parameters.size(); p++) {
+            values[p] = args.get(p).Eval();
+        }
+        
+        // alloc the current varaibles
         super.BeforeExec(); 
         
+        // assign values to the parameters
         for (int p = 0; p < this.parameters.size(); p++) {
             Value var = this.getVariable(this.parameters.get(p));
-            var.setValue(args.get(p).Eval());
+            var.setValue(values[p]);
         }
     }
     
