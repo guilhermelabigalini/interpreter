@@ -11,5 +11,9 @@ package org.os.interpreter.exptree;
  */
 public abstract class CustomIncVarible extends EvalExpr {
 
+    public CustomIncVarible(EvaluableExpr x) {
+        super(x);
+    }
+
       
 }

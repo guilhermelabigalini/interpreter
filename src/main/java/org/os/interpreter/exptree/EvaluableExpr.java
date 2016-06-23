@@ -9,7 +9,7 @@ package org.os.interpreter.exptree;
  *
  * @author guilherme
  */
-public abstract class EvaluableExpr {
+public interface EvaluableExpr {
 
-    public abstract Value Eval();
+    public Value Eval();
 }

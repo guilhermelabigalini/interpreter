@@ -11,6 +11,10 @@ package org.os.interpreter.exptree;
  */
 public class ThrowExpr extends Expr {
 
+    public ThrowExpr(Expr parent) {
+        super(parent);
+    }
+
     @Override
     public void Exec() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

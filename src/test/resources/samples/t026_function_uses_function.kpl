@@ -1,0 +1,19 @@
+var x = 0, y = 0, z = 0;
+
+function sum(a, b) {
+  return a + b;
+}
+
+function timestwo(a) {
+  return (a * 2);
+}
+
+function calc() {
+    x = sum(5,2);
+    y = timestwo(x);
+
+    // 22 + 14
+    z = sum(timestwo(2+9),(timestwo(1+2)+1)*2);
+}
+
+calc();

@@ -11,9 +11,13 @@ package org.os.interpreter.exptree;
  */
 public class NotExpr extends EvalExpr {
 
+    public NotExpr(EvaluableExpr x) {
+        super(x);
+    }
+
     @Override
     public Value Eval() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.getX().Eval().not();
     }
     
 }

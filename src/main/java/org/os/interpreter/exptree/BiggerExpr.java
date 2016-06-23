@@ -11,6 +11,9 @@ package org.os.interpreter.exptree;
  */
 public class BiggerExpr extends TwoOpsExpr {
 
+    public BiggerExpr(EvaluableExpr x, EvaluableExpr y) {
+        super(x, y);
+    }
 
     @Override
     public Value Eval() {

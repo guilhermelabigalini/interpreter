@@ -11,6 +11,10 @@ package org.os.interpreter.exptree;
  */
 public class PreIncVarible extends CustomIncVarible {
 
+    public PreIncVarible(EvaluableExpr x) {
+        super(x);
+    }
+
     @Override
     public Value Eval() {
         // x++

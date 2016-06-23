@@ -17,7 +17,7 @@ public class ModAssignExpr extends AssignExpr {
 
     @Override
     public void Exec() {
-        Value v = this.getCurrentValue();
+        Value v = this.getCurrentVar();
         v.setValue(v.mod(this.getEvalExpr().Eval()));
     }
 }

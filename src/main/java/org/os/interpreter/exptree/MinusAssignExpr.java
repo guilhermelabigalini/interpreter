@@ -17,7 +17,7 @@ public class MinusAssignExpr extends AssignExpr {
 
     @Override
     public void Exec() {
-        Value v = this.getCurrentValue();
+        Value v = this.getCurrentVar();
         v.setValue(v.subtract(this.getEvalExpr().Eval()));
     }
     

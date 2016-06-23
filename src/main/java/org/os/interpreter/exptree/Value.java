@@ -11,6 +11,8 @@ package org.os.interpreter.exptree;
  */
 public class Value implements Comparable<Value> {
 
+    public static Value Null = new Value(null);
+    
     private Object value;
 
     public Value() {
@@ -86,6 +88,14 @@ public class Value implements Comparable<Value> {
     @Override
     public int compareTo(Value o) {
         return ((Comparable) this.value).compareTo(o.getValue());
+    }
+
+    public Value not() {
+        if (value instanceof Boolean) {
+            return new Value(!(boolean) value);
+        }
+
+        throw new RuntimeException("Not only supported in BOOLEAN.");
     }
 
 }

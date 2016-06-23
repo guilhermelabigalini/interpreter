@@ -36,6 +36,7 @@ import org.os.interpreter.exptree.PosIncVarible;
 import org.os.interpreter.exptree.PreDecVarible;
 import org.os.interpreter.exptree.PreIncVarible;
 import org.os.interpreter.exptree.ProcExpr;
+import org.os.interpreter.exptree.ReturnExpr;
 import org.os.interpreter.exptree.SmallerEqualExpr;
 import org.os.interpreter.exptree.SmallerExpr;
 import org.os.interpreter.exptree.SubExpr;
@@ -44,6 +45,7 @@ import org.os.interpreter.exptree.TimesAssignExpr;
 import org.os.interpreter.exptree.TimesExpr;
 import org.os.interpreter.exptree.TwoOpsExpr;
 import org.os.interpreter.exptree.UserFuncCaller;
+import org.os.interpreter.exptree.UserFuncTemp;
 import org.os.interpreter.exptree.VaribleExpr;
 import org.os.interpreter.exptree.WhileExpr;
 import org.os.interpreter.token.Bookmark;
@@ -67,14 +69,15 @@ public class ExpressionTreeBuilder {
     private final Tokenizer FTokenizer;
     int FLastExprLine;
     boolean FReadingFunction;
-    private HashMap<String, Expr> FUserFunctions;
+    private HashMap<String, UserFuncTemp> FUserFunctions;
     private ProcExpr procExpr;
 
     private StreamToken FLastTkn;
     private final List<Error> errors;
 
-    private int loopCount = 0;
-    private int caseCount = 0;
+    private int loopCount;
+    private int caseCount;
+    private UserFuncTemp FCurUserFunc;
 
     public ExpressionTreeBuilder(String source) {
         this.errors = new ArrayList<>();
@@ -88,6 +91,7 @@ public class ExpressionTreeBuilder {
         procExpr = new ProcExpr();
         loopCount = 0;
         caseCount = 0;
+        FReadingFunction = false;
 
         if (!ReadProc(procExpr)) {
             throw new ParseException(this.errors);
@@ -146,18 +150,18 @@ public class ExpressionTreeBuilder {
             case ttTry:
                 return ReadTry(Expr);
             case ttThrow:
-                return ReadThrow(Expr);
+                return ReadThrow(Expr);*/
             case ttFunction:
                 if (FReadingFunction) {
                     logError(Error.EFUNCINFUNC);
                     return false;
                 }
                 FReadingFunction = true;
-                tmpR = ReadFunction();
+                tmpR = ReadFunction(Expr);
                 FReadingFunction = false;
                 return tmpR;
             case ttReturn:
-                return ReadReturn();*/
+                return ReadReturn(Expr);
             case ttBreak:
                 if (loopCount <= 0 && caseCount <= 0) {
                     logError(Error.EINVBREAKPOS);
@@ -341,8 +345,6 @@ public class ExpressionTreeBuilder {
 
         String Name;
         EvaluableExpr EvalExpr;
-        FuncExpr FuncExpr;
-        UserFuncCaller UserFuncExpr;
         AssignExpr AssignExpr;
         CustomIncVarible IncExpr;
 
@@ -401,12 +403,10 @@ public class ExpressionTreeBuilder {
                 EvalExpr = new VaribleExpr(Name, Expr);
 
                 if (tkn.getToken() == Token.ttPlusPlus) {
-                    IncExpr = new PosIncVarible();
+                    IncExpr = new PosIncVarible(EvalExpr);
                 } else {
-                    IncExpr = new PosDecVarible();
+                    IncExpr = new PosDecVarible(EvalExpr);
                 }
-
-                IncExpr.setX(EvalExpr);
 
                 tkn = FTokenizer.GetNextToken();
 
@@ -426,8 +426,8 @@ public class ExpressionTreeBuilder {
                 Result.setValue(new AssignIncExpr(Expr, IncExpr));
 
                 return true;
-            /*case ttBLeft:
-                if (FFunctions -> Find(AnsiString(Name), Index)) {
+            case ttBLeft:
+                /*if (FFunctions -> Find(AnsiString(Name), Index)) {
 
                     FuncExpr = new FuncExpr(Expr);
                     Result.setValue(FuncExpr);
@@ -444,35 +444,35 @@ public class ExpressionTreeBuilder {
                         return false;
                     }
                     return true;
-                } else if (FUserFunctions -> Find(AnsiString(Name), Index)) {
+                } else*/ if (FUserFunctions.containsKey(Name)) {
 
-                    CUserFuncTemp * UserFuncTemp = (CUserFuncTemp *)FUserFunctions -> GetItem(Index)->Data;
-                    UserFuncExpr = new CUserFuncCaller(Expr, UserFuncTemp);
+                    UserFuncTemp UserFuncTemp = FUserFunctions.get(Name);
+                    UserFuncCaller UserFuncExpr = new UserFuncCaller(Expr, UserFuncTemp);
 
-                     * Result = UserFuncExpr;
+                    Result.setValue(UserFuncExpr);
 
-                    if (UserFuncTemp -> ParamCount > 0) {
+                    if (UserFuncTemp.getTotalParameters() > 0) {
                         int pCount = 0;
-
-                        while (FLastTkn.Token != ttBRight && FLastTkn.Token != ttEof) {
+                        Reference<EvaluableExpr> ref = new Reference<>();
+                        while (FLastTkn.getToken() != Token.ttBRight && FLastTkn.getToken() != Token.ttEof) {
                             //we have a value parameter
-                            if (!LeComNivels(Expr,  & EvalExpr, esFunction)) {
+                            if (!LeComNivels(Expr,  ref, ExpressionStep.esFunction)) {
                                 return false;
                             }
-                            UserFuncExpr -> AddArg(EvalExpr);
+                            UserFuncExpr.AddArg(ref.getValue());
                             pCount++;
                         }
 
-                        if (pCount != UserFuncTemp -> ParamCount) {
+                        if (pCount != UserFuncTemp.getTotalParameters()) {
                             logError(Error.ENMBROFPARAMS);
                             return false;
                         }
-                    } else if (FTokenizer -> GetNextToken().Token != ttBRight) {
+                    } else if (FTokenizer.GetNextToken().getToken() != Token.ttBRight) {
                         logError(Error.EFUNCBRIGHT);
                         return false;
                     }
-                    tkn = FTokenizer -> GetNextToken();
-                    if (tkn.Token != ttSemicolon) {
+                    tkn = FTokenizer.GetNextToken();
+                    if (tkn.getToken() != Token.ttSemicolon) {
                         logError(Error.ESEMICOLON);
                         return false;
                     }
@@ -481,7 +481,7 @@ public class ExpressionTreeBuilder {
                     //funcao nao encontrada, gerar erro
                     logError(Error.FUNCNOTFOUND + Name);
                     return false;
-                }*/
+                }
             default:
                 //nome precisa ser seguido de = ou (
                 //para indicar chamada de fnc ou assiguinamento
@@ -496,6 +496,7 @@ public class ExpressionTreeBuilder {
         StreamToken tkn;
         List<EvaluableExpr> ValuesLst = new ArrayList<>();
         List<Token> OpsLst = new ArrayList<>();
+        EvaluableExpr x, y;
         int i, min;
 
         do {
@@ -525,7 +526,7 @@ public class ExpressionTreeBuilder {
                 }
                 break;
             }
-            if (!IsOperatorTkn(tkn.getToken())) {
+            if (!tkn.getToken().IsOperator()) {
                 logError(Error.EERRHNDNGOP);
                 return false;
             }
@@ -543,45 +544,49 @@ public class ExpressionTreeBuilder {
                     min = i;
                 }
             }
+
+            x = (ValuesLst.get(min));
+            y = (ValuesLst.get(min + 1));
+
             switch (OpsLst.get(min)) {
                 case ttTimes:
-                    Expr2Ops = new TimesExpr();
+                    Expr2Ops = new TimesExpr(x, y);
                     break;
                 case ttDiv:
-                    Expr2Ops = new DivExpr();
+                    Expr2Ops = new DivExpr(x, y);
                     break;
                 case ttMod:
-                    Expr2Ops = new ModExpr();
+                    Expr2Ops = new ModExpr(x, y);
                     break;
                 case ttPlus:
-                    Expr2Ops = new AddExpr();
+                    Expr2Ops = new AddExpr(x, y);
                     break;
                 case ttMinus:
-                    Expr2Ops = new SubExpr();
+                    Expr2Ops = new SubExpr(x, y);
                     break;
                 case ttBigger:
-                    Expr2Ops = new BiggerExpr();
+                    Expr2Ops = new BiggerExpr(x, y);
                     break;
                 case ttBEqual:
-                    Expr2Ops = new BiggerEqualExpr();
+                    Expr2Ops = new BiggerEqualExpr(x, y);
                     break;
                 case ttSmall:
-                    Expr2Ops = new SmallerExpr();
+                    Expr2Ops = new SmallerExpr(x, y);
                     break;
                 case ttSEqual:
-                    Expr2Ops = new SmallerEqualExpr();
+                    Expr2Ops = new SmallerEqualExpr(x, y);
                     break;
                 case ttIsEqual:
-                    Expr2Ops = new EqualExpr();
+                    Expr2Ops = new EqualExpr(x, y);
                     break;
                 case ttNotEqual:
-                    Expr2Ops = new NotEqualExpr();
+                    Expr2Ops = new NotEqualExpr(x, y);
                     break;
                 case ttOr:
-                    Expr2Ops = new BoolOrExpr();
+                    Expr2Ops = new BoolOrExpr(x, y);
                     break;
                 case ttAnd:
-                    Expr2Ops = new BoolAndExpr();
+                    Expr2Ops = new BoolAndExpr(x, y);
                     break;
                 default:
                     Expr2Ops = null;
@@ -590,8 +595,6 @@ public class ExpressionTreeBuilder {
                 logError(Error.EERRHNDNGOP);
                 return false;
             }
-            Expr2Ops.setX(ValuesLst.get(min));
-            Expr2Ops.setY(ValuesLst.get(min + 1));
             ValuesLst.remove(min + 1);
             OpsLst.remove(min);
             ValuesLst.set(min, Expr2Ops);
@@ -652,8 +655,7 @@ public class ExpressionTreeBuilder {
                 if (Expr.ExitsVar(name, true)) {
                     VaribleExpr varExp = new VaribleExpr(name, Expr);
                     Result.setValue(varExp);
-                }
-                /*else if (FFunctions -> Find(name, i)) {
+                } /*else if (FFunctions -> Find(name, i)) {
                     tkn = FTokenizer.GetNextToken();
                     if (tkn.getToken() != Token.ttBLeft) {
                         //raise an exception
@@ -666,39 +668,39 @@ public class ExpressionTreeBuilder {
                     if (!_ReadFuncParams(fe)) {
                         return false;
                     }
-                } else if (FUserFunctions -> Find(name, i)) {
-                    delete(char *)tkn.Data;
+                } */ else if (FUserFunctions.containsKey(name)) {
 
-                    CUserFuncTemp * UserFuncTemp = (CUserFuncTemp *)FUserFunctions -> GetItem(i)->Data;
-                    CUserFuncCaller * UserFuncExpr = new CUserFuncCaller(Expr, UserFuncTemp);
-                    CCustomEvalExpr * EvalExpr;
+                    UserFuncTemp UserFuncTemp = FUserFunctions.get(name);
+                    UserFuncCaller UserFuncExpr = new UserFuncCaller(Expr, UserFuncTemp);
+                    Reference<EvaluableExpr> EvalExpr = new Reference<>();
 
-                     * Result = (CCustomEvalExpr *)UserFuncExpr;
+                    Result.setValue(UserFuncExpr);
 
                     tkn = FTokenizer.GetNextToken();
-                    if (tkn.Token != ttBLeft) {
+                    if (tkn.getToken() != Token.ttBLeft) {
                         //raise an exception
                         logError(Error.EFUNCNOELEFT);
                         return false;
                     }
 
-                    if (UserFuncTemp -> ParamCount > 0) {
+                    if (UserFuncTemp.getTotalParameters() > 0) {
                         int pCount = 0;
 
-                        while (FLastTkn.Token != ttBRight && FLastTkn.Token != ttEof) {
+                        while (FLastTkn.getToken() != Token.ttBRight && FLastTkn.getToken() != Token.ttEof) {
                             //we have a value parameter
-                            if (!LeComNivels(Expr,  & EvalExpr, esFunction)) {
+                            if (!LeComNivels(Expr, EvalExpr, ExpressionStep.esFunction)) {
                                 return false;
                             }
-                            UserFuncExpr -> AddArg(EvalExpr);
+                            UserFuncExpr.AddArg(EvalExpr.getValue());
                             pCount++;
                         }
 
-                        if (pCount != UserFuncTemp -> ParamCount) {
+                        if (pCount != UserFuncTemp.getTotalParameters()) {
                             logError(Error.ENMBROFPARAMS);
                             return false;
                         }
-                    } else if (FTokenizer -> GetNextToken().Token != ttBRight) {
+
+                    } else if (FTokenizer.GetNextToken().getToken() != Token.ttBRight) {
                         logError(Error.EFUNCBRIGHT);
                         return false;
                     }
@@ -710,7 +712,10 @@ public class ExpressionTreeBuilder {
                     //}
 
                     return true;
-                }*/
+                } else {
+                    logError(Error.VARNOTFOUND);
+                    return false;
+                }
                 break;
             case ttValue:
                 ConstExpr constExp = new ConstExpr(tkn.getData());
@@ -727,8 +732,7 @@ public class ExpressionTreeBuilder {
                     return false;
                 }
 
-                PreIncVarible piv = new PreIncVarible();
-                piv.setX(OldR);
+                PreIncVarible piv = new PreIncVarible(OldR);
                 Result.setValue(piv);
                 OldR = Result.getValue();
 
@@ -738,8 +742,7 @@ public class ExpressionTreeBuilder {
                     logError(Error.EPREINC);
                     return false;
                 }
-                PreDecVarible pdv = new PreDecVarible();
-                pdv.setX(OldR);
+                PreDecVarible pdv = new PreDecVarible(OldR);
                 Result.setValue(pdv);
                 OldR = Result.getValue();
 
@@ -755,8 +758,7 @@ public class ExpressionTreeBuilder {
                         return false;
                     }
 
-                    PosIncVarible pic = new PosIncVarible();
-                    pic.setX(OldR);
+                    PosIncVarible pic = new PosIncVarible(OldR);
                     Result.setValue(pic);
                     OldR = Result.getValue();
 
@@ -767,8 +769,7 @@ public class ExpressionTreeBuilder {
                         return false;
                     }
 
-                    PosDecVarible psdv = new PosDecVarible();
-                    psdv.setX(OldR);
+                    PosDecVarible psdv = new PosDecVarible(OldR);
                     Result.setValue(psdv);
                     OldR = Result.getValue();
 
@@ -781,27 +782,18 @@ public class ExpressionTreeBuilder {
 
         switch (firstOp) {
             case opNot:
-                NotExpr notEx = new NotExpr();
-                notEx.setX(OldR);
+                NotExpr notEx = new NotExpr(OldR);
+                Result.setValue(notEx);
+                OldR = Result.getValue();
                 break;
             case opMinus:
-                NegExpr negEx = new NegExpr();
-                negEx.setX(OldR);
+                NegExpr negEx = new NegExpr(OldR);
+                Result.setValue(negEx);
+                OldR = Result.getValue();
                 break;
         }
 
         return (Result.getValue() != null);
-    }
-
-    private boolean IsOperatorTkn(Token token) {
-
-        return ((token == Token.ttPlus) || (token == Token.ttMinus)
-                || (token == Token.ttTimes) || (token == Token.ttDiv)
-                || (token == Token.ttBigger) || (token == Token.ttBEqual)
-                || (token == Token.ttSmall) || (token == Token.ttSEqual)
-                || (token == Token.ttIsEqual) || (token == Token.ttMod)
-                || (token == Token.ttNotEqual) || (token == Token.ttOr)
-                || (token == Token.ttAnd));
     }
 
     private int GetOperatorLevel(Token token) {
@@ -1024,5 +1016,82 @@ public class ExpressionTreeBuilder {
         }
 
         return false;
+    }
+
+    private boolean ReadFunction(InstructLstExpr Expr) {
+        StreamToken tkn;
+        String funcName;
+        UserFuncTemp UserFunc;
+
+        tkn = FTokenizer.GetNextToken();
+        if (tkn.getToken() != Token.ttName) {
+            logError(Error.EFUNCNAME);
+            return false;
+        }
+
+        funcName = (String) tkn.getData();
+
+        // TODO check if it is a system function
+        if (FUserFunctions.containsKey(funcName)) {
+            logError(Error.EFUNCEXISTS);
+            return false;
+        }
+
+        tkn = FTokenizer.GetNextToken();
+        if (tkn.getToken() != Token.ttBLeft) {
+            logError(Error.EFUNCBLEFT);
+            return false;
+        }
+
+        UserFunc = new UserFuncTemp(Expr);
+        tkn = FTokenizer.GetNextToken();
+        if (tkn.getToken() != Token.ttBRight) {
+            while (true) {
+                if (tkn.getToken() != Token.ttName) {
+                    logError(Error.EVARNAMENTFND);
+                    return false;
+                }
+                UserFunc.addParameter((String) tkn.getData());
+                tkn = FTokenizer.GetNextToken();
+                if (tkn.getToken() == Token.ttBRight) {
+                    break;
+                } else if (tkn.getToken() != Token.ttComma) {
+                    logError(Error.ECOMMA);
+                    return false;
+                }
+                tkn = FTokenizer.GetNextToken();
+            }
+        }
+        FCurUserFunc = UserFunc;
+        if (!ReadBlock(UserFunc.getBody(), true)) {
+            return false;
+        }
+        FUserFunctions.put(funcName, UserFunc);
+        return true;
+    }
+
+    private boolean ReadReturn(InstructLstExpr Expr) {
+        Reference<EvaluableExpr> returnExpr = new Reference<>();
+        StreamToken tkn;
+        Bookmark book;
+
+        if (!FReadingFunction) {
+            logError(Error.ERETURNFUNC);
+            return false;
+        }
+
+        book = FTokenizer.GetBookmark();
+        tkn = FTokenizer.GetNextToken();
+
+        if (tkn.getToken() != Token.ttSemicolon) {
+            FTokenizer.GotoBookmark(book);
+            if (!LeComNivels(Expr, returnExpr, ExpressionStep.esNone)) {
+                return false;
+            }
+        }
+
+        ReturnExpr ReturnExpr = new ReturnExpr(Expr, returnExpr.getValue());
+        Expr.AddItem(ReturnExpr);
+        return true;
     }
 }

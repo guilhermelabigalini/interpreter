@@ -1,5 +1,5 @@
 var a = 1;
-var b1, b2, b3, b4, b5, b6;
+var b1, b2, b3, b4, b5, b6, b7;
 var b = true;
 var c = false;
 
@@ -14,3 +14,5 @@ b4 = (b || c);
 b5 = ((b || c) && true);
 // false
 b6 = (((b || c) && true) && false);
+// true
+b7 = !c;

@@ -11,6 +11,10 @@ package org.os.interpreter.exptree;
  */
 public class SmallerEqualExpr extends TwoOpsExpr {
 
+    public SmallerEqualExpr(EvaluableExpr x, EvaluableExpr y) {
+        super(x, y);
+    }
+
     @Override
     public Value Eval() {
         int cp = this.getX().Eval().compareTo(this.getY().Eval());

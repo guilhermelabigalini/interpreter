@@ -11,6 +11,10 @@ package org.os.interpreter.exptree;
  */
 public class TimesExpr extends TwoOpsExpr {
 
+    public TimesExpr(EvaluableExpr x, EvaluableExpr y) {
+        super(x, y);
+    }
+
     @Override
     public Value Eval() {
         return this.getX().Eval().times(this.getY().Eval());

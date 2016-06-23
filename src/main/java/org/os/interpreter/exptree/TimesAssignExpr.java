@@ -17,7 +17,7 @@ public class TimesAssignExpr extends AssignExpr {
 
     @Override
     public void Exec() {
-        Value v = this.getCurrentValue();
+        Value v = this.getCurrentVar();
         v.setValue(v.times(this.getEvalExpr().Eval()));
     }
 }

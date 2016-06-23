@@ -11,6 +11,10 @@ package org.os.interpreter.exptree;
  */
 public class EqualExpr extends TwoOpsExpr {
 
+    public EqualExpr(EvaluableExpr x, EvaluableExpr y) {
+        super(x, y);
+    }
+
     @Override
     public Value Eval() {
         return new Value(this.getX().Eval().equals(this.getY().Eval()));

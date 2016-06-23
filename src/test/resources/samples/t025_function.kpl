@@ -1,0 +1,13 @@
+function sum(a, b) {
+  return a + b;
+}
+
+function timestwo(a) {
+  return (a * 2);
+}
+
+var x = 0, y = 0;
+
+x = sum(1,2);
+
+y = timestwo(2);

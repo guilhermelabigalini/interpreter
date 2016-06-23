@@ -9,11 +9,17 @@ package org.os.interpreter.exptree;
  *
  * @author guilherme
  */
-public class TryExpr extends Expr {
+public class TryCatchFinallyExpr extends Expr {
+
+    public TryCatchFinallyExpr(Expr parent) {
+        super(parent);
+    }
 
     @Override
-    public void Exec() {
+    public void Exec() throws ExecutionSignalException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-  
+    
+    
+    
 }

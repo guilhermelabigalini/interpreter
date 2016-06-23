@@ -11,9 +11,6 @@ package org.os.interpreter.token;
  */
 public final class CharHelper {
 
-    private CharHelper() {
-    }
-    
     public static boolean isoctchar(char c) {
         return c >= '0' && c <= '7';
     }

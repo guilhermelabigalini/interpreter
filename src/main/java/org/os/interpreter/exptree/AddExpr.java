@@ -11,6 +11,10 @@ package org.os.interpreter.exptree;
  */
 public class AddExpr extends TwoOpsExpr {
 
+    public AddExpr(EvaluableExpr x, EvaluableExpr y) {
+        super(x, y);
+    }
+
     @Override
     public Value Eval() {
         return this.getX().Eval().sum(this.getY().Eval());

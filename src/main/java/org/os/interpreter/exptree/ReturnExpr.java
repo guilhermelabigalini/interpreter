@@ -11,9 +11,21 @@ package org.os.interpreter.exptree;
  */
 public class ReturnExpr extends Expr {
 
+    private final EvaluableExpr returnExp;
+
+    public ReturnExpr(Expr parent, EvaluableExpr returnExp) {
+        super(parent);
+        this.returnExp = returnExp;
+    }
+
     @Override
-    public void Exec() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void Exec() throws ReturnSignalException {
+        Value result = null;
+        
+        if (returnExp != null) 
+            result = returnExp.Eval();
+        
+        throw new ReturnSignalException(result);
     }
     
 }

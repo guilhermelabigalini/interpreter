@@ -13,12 +13,12 @@ public abstract class TwoOpsExpr extends EvalExpr {
 
     private EvaluableExpr y;
 
-    public EvaluableExpr getY() {
-        return y;
-    }
-
-    public void setY(EvaluableExpr y) {
+    public TwoOpsExpr(EvaluableExpr x, EvaluableExpr y) {
+        super(x);
         this.y = y;
     }
 
+    public EvaluableExpr getY() {
+        return y;
+    }
 }

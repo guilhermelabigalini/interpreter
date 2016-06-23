@@ -11,6 +11,10 @@ package org.os.interpreter.exptree;
  */
 public class DivExpr extends TwoOpsExpr {
 
+    public DivExpr(EvaluableExpr x, EvaluableExpr y) {
+        super(x, y);
+    }
+
     @Override
     public Value Eval() {
         return this.getX().Eval().divide(this.getY().Eval());

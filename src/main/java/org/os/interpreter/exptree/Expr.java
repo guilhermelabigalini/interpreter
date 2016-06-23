@@ -12,10 +12,6 @@ package org.os.interpreter.exptree;
 public abstract class Expr {
 
     private final Expr parent;
-
-    public Expr() {
-        this.parent = null;
-    }
     
     public Expr(Expr parent) {
         this.parent = parent;

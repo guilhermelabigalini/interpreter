@@ -11,6 +11,10 @@ package org.os.interpreter.exptree;
  */
 public class BoolOrExpr extends TwoOpsExpr {
 
+    public BoolOrExpr(EvaluableExpr x, EvaluableExpr y) {
+        super(x, y);
+    }
+
     @Override
     public Value Eval() {
         return new Value(this.getX().Eval().asBoolean() || this.getY().Eval().asBoolean());

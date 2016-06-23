@@ -6,6 +6,7 @@
 package org.os.interpreter;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.Scanner;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -224,6 +225,9 @@ public class ExpressionTreeBuilderTest {
 
         v = procedure.getVariable("b6");
         assertEquals(false, v.getValue());
+
+        v = procedure.getVariable("b7");
+        assertEquals(true, v.getValue());
     }
 
     @Test
@@ -413,6 +417,42 @@ public class ExpressionTreeBuilderTest {
 
         v = procedure.getVariable("r");
         assertEquals(5, v.getValue());
+    }
+
+    @Test
+    public void t024_swtich_multiple_cases() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t024_swtich_multiple_cases.kpl");
+        Value v;
+
+        v = procedure.getVariable("r");
+        assertEquals(2, v.getValue());
+    }
+
+    @Test
+    public void t025_function() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t025_function.kpl");
+        Value v;
+
+        v = procedure.getVariable("x");
+        assertEquals(3, v.getValue());
+
+        v = procedure.getVariable("y");
+        assertEquals(4, v.getValue());
+    }
+
+    @Test
+    public void t026_function_uses_function() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t026_function_uses_function.kpl");
+        Value v;
+
+        v = procedure.getVariable("x");
+        assertEquals(7, v.getValue());
+
+        v = procedure.getVariable("y");
+        assertEquals(14, v.getValue());
+
+        v = procedure.getVariable("z");
+        assertEquals(36, v.getValue());
     }
 //
 //    @Test

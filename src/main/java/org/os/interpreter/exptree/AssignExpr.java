@@ -28,7 +28,7 @@ public class AssignExpr extends Expr {
         return EvalExpr;
     }
 
-    protected Value getCurrentValue() {
+    protected Value getCurrentVar() {
         InstructLstExpr il = (InstructLstExpr) this.getParent();
         Value v = il.getVariable(name);
         return v;
@@ -36,7 +36,7 @@ public class AssignExpr extends Expr {
 
     @Override
     public void Exec() {
-        Value v = this.getCurrentValue();
+        Value v = this.getCurrentVar();
         v.setValue(EvalExpr.Eval());
     }
 

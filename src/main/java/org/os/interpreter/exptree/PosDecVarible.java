@@ -11,6 +11,10 @@ package org.os.interpreter.exptree;
  */
 public class PosDecVarible extends CustomIncVarible {
 
+    public PosDecVarible(EvaluableExpr x) {
+        super(x);
+    }
+
     @Override
     public Value Eval() {
         // x++

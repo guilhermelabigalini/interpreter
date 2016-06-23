@@ -27,11 +27,6 @@ public class BufferReader {
         this.position = 0;
     }
 
-    public char moveAndGetChar() {
-        next();
-        return currentChar();
-    }
-
     public char currentCharAndMove() {
         char c = buffer.charAt(position);
         next();

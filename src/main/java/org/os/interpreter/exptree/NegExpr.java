@@ -11,6 +11,10 @@ package org.os.interpreter.exptree;
  */
 public class NegExpr extends EvalExpr {
 
+    public NegExpr(EvaluableExpr x) {
+        super(x);
+    }
+
     @Override
     public Value Eval() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

@@ -88,10 +88,10 @@ public class SwitchExpr extends Expr {
                 }
             }
         }
-
-        if (this.isDefaultBlockDefined() && (singleCasePassed || !aborted)) {
+        if (this.isDefaultBlockDefined() && (!aborted)) {
             defaultProc.Exec();
         }
+
     }
 
 }

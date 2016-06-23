@@ -11,6 +11,10 @@ package org.os.interpreter.exptree;
  */
 public class NotEqualExpr extends TwoOpsExpr {
 
+    public NotEqualExpr(EvaluableExpr x, EvaluableExpr y) {
+        super(x, y);
+    }
+
     @Override
     public Value Eval() {
         int cp = this.getX().Eval().compareTo(this.getY().Eval());

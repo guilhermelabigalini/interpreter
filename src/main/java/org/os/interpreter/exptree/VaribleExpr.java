@@ -9,9 +9,9 @@ package org.os.interpreter.exptree;
  *
  * @author guilherme
  */
-public class VaribleExpr extends EvalExpr {
+public class VaribleExpr implements EvaluableExpr {
 
-    private String name;
+    private final String name;
     private final InstructLstExpr parent;
 
     public VaribleExpr(String name, InstructLstExpr parent) {
