@@ -136,23 +136,25 @@ public class Tokenizer {
                     StringBuilder str = new StringBuilder();
                     int i = 0;
 
-                    do {
+                    while (!reader.eof()) {
                         reader.next();
                         if (reader.currentChar() == '\\') {
                             reader.next();
-                            switch (toUpperCase(reader.currentChar())) {
-                                case 'N':
-                                    str.append('\n');
-                                    break;
-                                case 'R':
-                                    str.append('\r');
-                                    break;
-                                case 'T':
-                                    str.append((char) 9);
-                                    break;
-                                default:
-                                    str.append(reader.currentChar());
-                                    break;
+                            if (!reader.eof()) {
+                                switch (toUpperCase(reader.currentChar())) {
+                                    case 'N':
+                                        str.append('\n');
+                                        break;
+                                    case 'R':
+                                        str.append('\r');
+                                        break;
+                                    case 'T':
+                                        str.append((char) 9);
+                                        break;
+                                    default:
+                                        str.append(reader.currentChar());
+                                        break;
+                                }
                             }
                         } else if (reader.currentChar() == '"') {
                             reader.next();
@@ -160,7 +162,7 @@ public class Tokenizer {
                         } else {
                             str.append(reader.currentChar());
                         }
-                    } while (!reader.eof());
+                    }
 
                     t = Token.ttValue;
                     data = str.toString();

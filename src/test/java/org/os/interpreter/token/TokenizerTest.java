@@ -44,15 +44,21 @@ public class TokenizerTest {
         assertEquals(tokens[0].getData(), "hello");
         assertEquals(tokens[1].getToken(), Token.ttEof);
     }
-    
-        @Test
+
+    @Test
     public void parse_string_with_backslash() {
-        StreamToken[] tokens = getTokens("  \"\\\"string\\\" ");
+        StreamToken[] tokens = getTokens("  \"\\\\string\\t\" \"string\\n\" \"string\\r\" ");
 
         assertEquals(tokens[0].getToken(), Token.ttValue);
-        assertEquals(tokens[0].getData(), "\"hello\"");
+        assertEquals(tokens[0].getData(), "\\string\t");
         
-        assertEquals(tokens[1].getToken(), Token.ttEof);
+        assertEquals(tokens[1].getToken(), Token.ttValue);
+        assertEquals(tokens[1].getData(), "string\n");
+        
+        assertEquals(tokens[2].getToken(), Token.ttValue);
+        assertEquals(tokens[2].getData(), "string\r");
+
+        assertEquals(tokens[3].getToken(), Token.ttEof);
     }
 
     @Test

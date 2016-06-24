@@ -6,6 +6,8 @@
 package org.os.interpreter;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -30,9 +32,16 @@ public class ExpressionTreeBuilderTest {
         String code = loadResourceAsString(path);
 
         ExpressionTreeBuilder it = new ExpressionTreeBuilder(code);
+        Instant tc1 = Instant.now();
         ProcExpr procedure = it.compile();
+        Instant tc2 = Instant.now();
 
+        Instant tr1 = Instant.now();
         procedure.Exec();
+        Instant tr2 = Instant.now();
+
+        System.out.println("Time to compile " + path + " " + ChronoUnit.MILLIS.between(tc1, tc2) + "ms");
+        System.out.println("Time to run " + path + " " + ChronoUnit.MILLIS.between(tr1, tr2) + "ms");
 
         return procedure;
     }
