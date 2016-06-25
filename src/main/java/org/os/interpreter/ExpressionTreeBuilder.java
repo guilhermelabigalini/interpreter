@@ -21,7 +21,6 @@ import org.os.interpreter.exptree.EqualExpr;
 import org.os.interpreter.exptree.EvalExpr;
 import org.os.interpreter.exptree.Expr;
 import org.os.interpreter.exptree.ForExpr;
-import org.os.interpreter.exptree.FuncExpr;
 import org.os.interpreter.exptree.IfExpr;
 import org.os.interpreter.exptree.InstructLstExpr;
 import org.os.interpreter.exptree.MinusAssignExpr;

@@ -26,10 +26,6 @@ public class Value implements Comparable<Value> {
         return value;
     }
 
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
     public void setValue(Value value) {
         this.value = value.value;
     }

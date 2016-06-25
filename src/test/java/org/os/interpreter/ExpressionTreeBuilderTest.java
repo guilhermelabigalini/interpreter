@@ -36,12 +36,13 @@ public class ExpressionTreeBuilderTest {
         ProcExpr procedure = it.compile();
         Instant tc2 = Instant.now();
 
-        Instant tr1 = Instant.now();
+        long tr1 = System.currentTimeMillis();
         procedure.Exec();
-        Instant tr2 = Instant.now();
+        long tr2 = System.currentTimeMillis();
 
-        System.out.println("Time to compile " + path + " " + ChronoUnit.MILLIS.between(tc1, tc2) + "ms");
-        System.out.println("Time to run " + path + " " + ChronoUnit.MILLIS.between(tr1, tr2) + "ms");
+        System.out.println("Time for " + path
+                + " - compile: " + ChronoUnit.MILLIS.between(tc1, tc2) + "ms,"
+                + " run: " + (tr2 - tr1) + "ms");
 
         return procedure;
     }
@@ -161,6 +162,12 @@ public class ExpressionTreeBuilderTest {
 
         v = procedure.getPreviousVariable("e");
         assertEquals(7, v.getValue());
+
+        v = procedure.getPreviousVariable("f");
+        assertEquals(-1, v.getValue());
+
+        v = procedure.getPreviousVariable("g");
+        assertEquals(-9, v.getValue());
     }
 
     @Test
