@@ -7,6 +7,7 @@ package org.os.interpreter.exptree;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.os.interpreter.value.NotAllowedOperationException;
 
 /**
  *
@@ -26,7 +27,7 @@ public class UserFuncCaller extends Expr implements EvaluableExpr {
     }
 
     @Override
-    public Value Eval() {
+    public Value Eval() throws NotAllowedOperationException {
         return UserFuncTemp.Eval(args);
     }
 
@@ -35,7 +36,7 @@ public class UserFuncCaller extends Expr implements EvaluableExpr {
     }
 
     @Override
-    public void Exec() throws ExecutionSignalException {
+    public void Exec() throws ExecutionSignalException, NotAllowedOperationException {
         Eval();
     }
 

@@ -18,6 +18,7 @@ public interface Valuable {
     Valuable neg() throws NotAllowedOperationException;
     Valuable not() throws NotAllowedOperationException;
     Valuable same(Valuable v) throws NotAllowedOperationException;
+    Valuable notsame(Valuable v) throws NotAllowedOperationException;
     Valuable smaller(Valuable v) throws NotAllowedOperationException;
     Valuable bigger(Valuable v) throws NotAllowedOperationException;
     Valuable smallerOrEqual(Valuable v) throws NotAllowedOperationException;

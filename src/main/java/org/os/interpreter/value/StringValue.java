@@ -59,6 +59,11 @@ public class StringValue implements Valuable {
     }
 
     @Override
+    public Valuable notsame(Valuable v) throws NotAllowedOperationException {
+        return TryCmdString(v, (cmp) -> cmp != 0);
+    }
+
+    @Override
     public Valuable smaller(Valuable v) throws NotAllowedOperationException {
         return TryCmdString(v, (cmp) -> cmp < 0);
     }
@@ -98,6 +103,7 @@ public class StringValue implements Valuable {
 
     @Override
     public Valuable not() throws NotAllowedOperationException {
-        throw new NotAllowedOperationException(); 
+        throw new NotAllowedOperationException();
     }
+
 }

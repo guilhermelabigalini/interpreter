@@ -5,6 +5,8 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
@@ -19,7 +21,7 @@ public class ReturnExpr extends Expr {
     }
 
     @Override
-    public void Exec() throws ReturnSignalException {
+    public void Exec() throws ReturnSignalException, NotAllowedOperationException {
         Value result = null;
         
         if (returnExp != null) 

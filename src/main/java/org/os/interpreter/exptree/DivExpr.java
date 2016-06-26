@@ -5,6 +5,8 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
@@ -16,7 +18,7 @@ public class DivExpr extends TwoOpsExpr {
     }
 
     @Override
-    public Value Eval() {
+    public Value Eval() throws NotAllowedOperationException {
         return this.getX().Eval().divide(this.getY().Eval());
     }
     

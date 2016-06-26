@@ -75,6 +75,11 @@ public class IntValue implements Valuable {
     }
 
     @Override
+    public Valuable notsame(Valuable v) throws NotAllowedOperationException {
+        return TryCmpInteger(v, (cmp) -> cmp != 0);
+    }
+
+    @Override
     public Valuable bigger(Valuable v) throws NotAllowedOperationException {
         return TryCmpInteger(v, (cmp) -> cmp > 0);
     }
@@ -152,6 +157,7 @@ public class IntValue implements Valuable {
 
     @Override
     public Valuable not() throws NotAllowedOperationException {
-        throw new NotAllowedOperationException(); 
+        throw new NotAllowedOperationException();
     }
+
 }

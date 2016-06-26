@@ -22,7 +22,23 @@ public class BooleanValueTest {
         assertTrue(r instanceof StringValue);
         assertEquals("ab", ((StringValue) r).getString());
     }
+    
+    @Test
+    public void notsame_positive() throws NotAllowedOperationException {
 
+        Valuable r = BooleanValue.True.notsame(BooleanValue.True);
+
+        assertEquals(BooleanValue.False, r);
+    }
+
+    @Test
+    public void notsame_negative() throws NotAllowedOperationException {
+
+        Valuable r = BooleanValue.True.notsame(BooleanValue.False);
+
+        assertEquals(BooleanValue.True, r);
+    }
+    
     @Test
     public void same_positive() throws NotAllowedOperationException {
 

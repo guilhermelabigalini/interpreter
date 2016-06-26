@@ -8,6 +8,9 @@ package org.os.interpreter.token;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
+import org.os.interpreter.token.StreamToken;
+import org.os.interpreter.token.Token;
+import org.os.interpreter.token.Tokenizer;
 import static org.junit.Assert.*;
 
 /**

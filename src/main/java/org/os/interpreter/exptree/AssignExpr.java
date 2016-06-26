@@ -5,6 +5,8 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
@@ -35,7 +37,7 @@ public class AssignExpr extends Expr {
     }
 
     @Override
-    public void Exec() {
+    public void Exec() throws NotAllowedOperationException {
         Value v = this.getCurrentVar();
         v.setValue(EvalExpr.Eval());
     }

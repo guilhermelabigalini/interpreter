@@ -20,49 +20,53 @@ public class BooleanValue implements Valuable {
         this.boolValue = boolValue;
     }
 
+    public boolean boolValue() {
+        return boolValue;
+    }
+
     @Override
     public Valuable sum(Valuable v) throws NotAllowedOperationException {
-        throw new NotAllowedOperationException(); 
+        throw new NotAllowedOperationException();
     }
 
     @Override
     public Valuable subtract(Valuable v) throws NotAllowedOperationException {
-        throw new NotAllowedOperationException(); 
+        throw new NotAllowedOperationException();
     }
 
     @Override
     public Valuable times(Valuable v) throws NotAllowedOperationException {
-        throw new NotAllowedOperationException(); 
+        throw new NotAllowedOperationException();
     }
 
     @Override
     public Valuable divide(Valuable v) throws NotAllowedOperationException {
-        throw new NotAllowedOperationException(); 
+        throw new NotAllowedOperationException();
     }
 
     @Override
     public Valuable mod(Valuable v) throws NotAllowedOperationException {
-        throw new NotAllowedOperationException(); 
+        throw new NotAllowedOperationException();
     }
 
     @Override
     public Valuable smaller(Valuable v) throws NotAllowedOperationException {
-        throw new NotAllowedOperationException(); 
+        throw new NotAllowedOperationException();
     }
 
     @Override
     public Valuable bigger(Valuable v) throws NotAllowedOperationException {
-        throw new NotAllowedOperationException(); 
+        throw new NotAllowedOperationException();
     }
 
     @Override
     public Valuable smallerOrEqual(Valuable v) throws NotAllowedOperationException {
-        throw new NotAllowedOperationException(); 
+        throw new NotAllowedOperationException();
     }
 
     @Override
     public Valuable biggerOrEqual(Valuable v) throws NotAllowedOperationException {
-        throw new NotAllowedOperationException(); 
+        throw new NotAllowedOperationException();
     }
 
     @Override
@@ -76,7 +80,7 @@ public class BooleanValue implements Valuable {
 
     @Override
     public Valuable neg() throws NotAllowedOperationException {
-        throw new NotAllowedOperationException(); 
+        throw new NotAllowedOperationException();
     }
 
     @Override
@@ -85,6 +89,15 @@ public class BooleanValue implements Valuable {
             return BooleanValue.False;
         } else {
             return BooleanValue.True;
+        }
+    }
+
+    @Override
+    public Valuable notsame(Valuable v) throws NotAllowedOperationException {
+        if (this == v) {
+            return False;
+        } else {
+            return True;
         }
     }
 

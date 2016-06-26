@@ -5,6 +5,8 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
@@ -19,7 +21,7 @@ public class AssignIncExpr extends Expr {
     }
 
     @Override
-    public void Exec() {
+    public void Exec() throws NotAllowedOperationException {
         
         IncExpr.Eval();
     }

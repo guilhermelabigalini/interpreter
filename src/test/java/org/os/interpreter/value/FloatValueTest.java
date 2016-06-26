@@ -60,7 +60,23 @@ public class FloatValueTest {
         assertEquals(BooleanValue.False, r);
     }
 
-        @Test
+    @Test
+    public void notsame_positive() throws NotAllowedOperationException {
+
+        Valuable r = ValuableFactory.fromFloat(1).notsame(ValuableFactory.fromFloat(1));
+
+        assertEquals(BooleanValue.False, r);
+    }
+
+    @Test
+    public void notsame_negative() throws NotAllowedOperationException {
+
+        Valuable r = ValuableFactory.fromFloat(1).notsame(ValuableFactory.fromFloat(2));
+
+        assertEquals(BooleanValue.True, r);
+    }
+
+    @Test
     public void same_positive_int() throws NotAllowedOperationException {
 
         Valuable r = ValuableFactory.fromFloat(1).same(ValuableFactory.fromInt(1));
@@ -75,7 +91,7 @@ public class FloatValueTest {
 
         assertEquals(BooleanValue.False, r);
     }
-    
+
     @Test
     public void smaller_positive() throws NotAllowedOperationException {
 

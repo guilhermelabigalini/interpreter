@@ -7,6 +7,7 @@ package org.os.interpreter.exptree;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.os.interpreter.value.NotAllowedOperationException;
 
 /**
  *
@@ -36,7 +37,7 @@ public class UserFuncTemp extends InstructLstExpr {
     }
 
     @Override
-    public void BeforeExec() {
+    public void BeforeExec() throws NotAllowedOperationException {
         // resolve the parameter values
         Value[] values = new Value[this.parameters.size()];
         for (int p = 0; p < this.parameters.size(); p++) {
@@ -53,7 +54,7 @@ public class UserFuncTemp extends InstructLstExpr {
         }
     }
     
-    public Value Eval(List<EvaluableExpr> args) {
+    public Value Eval(List<EvaluableExpr> args) throws NotAllowedOperationException {
         try {
             this.args = args;
             

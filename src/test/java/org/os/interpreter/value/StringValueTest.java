@@ -25,6 +25,22 @@ public class StringValueTest {
     }
 
     @Test
+    public void notsame_positive() throws NotAllowedOperationException {
+
+        Valuable r = ValuableFactory.fromString("a").notsame(ValuableFactory.fromString("a"));
+
+        assertEquals(BooleanValue.False, r);
+    }
+
+    @Test
+    public void notsame_negative() throws NotAllowedOperationException {
+
+        Valuable r = ValuableFactory.fromString("a").notsame(ValuableFactory.fromString("b"));
+
+        assertEquals(BooleanValue.True, r);
+    }
+
+    @Test
     public void same_positive() throws NotAllowedOperationException {
 
         Valuable r = ValuableFactory.fromString("a").same(ValuableFactory.fromString("a"));

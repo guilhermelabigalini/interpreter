@@ -5,6 +5,8 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
@@ -26,7 +28,7 @@ public class IfExpr extends ConditionalExpr {
     }
 
     @Override
-    public void Exec() throws ExecutionSignalException {
+    public void Exec() throws ExecutionSignalException, NotAllowedOperationException {
 
         BeforeExec();
 

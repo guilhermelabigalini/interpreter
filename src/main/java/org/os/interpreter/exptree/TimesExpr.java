@@ -5,6 +5,8 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
@@ -16,7 +18,7 @@ public class TimesExpr extends TwoOpsExpr {
     }
 
     @Override
-    public Value Eval() {
+    public Value Eval() throws NotAllowedOperationException {
         return this.getX().Eval().times(this.getY().Eval());
     }
     

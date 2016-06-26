@@ -5,11 +5,13 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
  */
 public interface EvaluableExpr {
 
-    public Value Eval();
+    public Value Eval() throws NotAllowedOperationException;
 }

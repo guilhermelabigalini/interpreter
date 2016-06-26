@@ -5,6 +5,8 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
@@ -21,12 +23,12 @@ public abstract class Expr {
         return parent;
     }
 
-    public abstract void Exec() throws ExecutionSignalException;
+    public abstract void Exec() throws ExecutionSignalException, NotAllowedOperationException;
     
-    public void BeforeExec() {
+    public void BeforeExec()  throws NotAllowedOperationException {
     }
     
-    public void AfterExec() {
+    public void AfterExec()  throws NotAllowedOperationException {
     }
 
 }

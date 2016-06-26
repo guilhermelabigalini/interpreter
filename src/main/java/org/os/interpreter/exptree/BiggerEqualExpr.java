@@ -5,6 +5,8 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
@@ -16,8 +18,7 @@ public class BiggerEqualExpr extends TwoOpsExpr {
     }
 
     @Override
-    public Value Eval() {
-        int cp = this.getX().Eval().compareTo(this.getY().Eval());
-        return new Value(cp >= 0);
+    public Value Eval() throws NotAllowedOperationException {
+        return this.getX().Eval().biggerOrEqual(this.getY().Eval());
     }
 }

@@ -5,6 +5,8 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
@@ -16,8 +18,8 @@ public class BoolAndExpr extends TwoOpsExpr {
     }
 
     @Override
-    public Value Eval() {
-        return new Value(this.getX().Eval().asBoolean() && this.getY().Eval().asBoolean());
+    public Value Eval() throws NotAllowedOperationException {
+        return Value.forBoolean(this.getX().Eval().asBoolean() && this.getY().Eval().asBoolean());
     }
     
 }

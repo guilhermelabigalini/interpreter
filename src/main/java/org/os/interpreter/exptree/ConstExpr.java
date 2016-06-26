@@ -5,15 +5,17 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.Valuable;
+
 /**
  *
  * @author guilherme
  */
 public class ConstExpr implements EvaluableExpr {
 
-    private final Object value;
+    private final Valuable value;
 
-    public ConstExpr(Object value) {
+    public ConstExpr(Valuable value) {
         this.value = value;
     }
     

@@ -1,0 +1,5 @@
+var a, b, c;
+
+a = "abc";
+b = 2;
+c = a * b;

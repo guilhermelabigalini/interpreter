@@ -5,6 +5,8 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
@@ -16,8 +18,8 @@ public class NegExpr extends EvalExpr {
     }
 
     @Override
-    public Value Eval() {
-        return this.getX().Eval().times(new Value(-1));
+    public Value Eval() throws NotAllowedOperationException {
+        return this.getX().Eval().neg();
     }
     
 }

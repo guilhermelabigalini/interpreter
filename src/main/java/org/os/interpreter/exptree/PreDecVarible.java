@@ -5,6 +5,8 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
@@ -16,12 +18,12 @@ public class PreDecVarible extends EvalExpr {
     }
 
     @Override
-    public Value Eval() {
+    public Value Eval() throws NotAllowedOperationException {
         // x++
         // return the value, then descremen 
         EvaluableExpr x = this.getX();
         Value v = x.Eval();
-        v.setValue(v.sum(new Value(-1)));
+        v.setValue(v.sum(Value.forInt(-1)));
         return v;
     }
     

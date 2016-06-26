@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
+import org.os.interpreter.value.NotAllowedOperationException;
 
 /**
  *
@@ -110,7 +111,7 @@ public class InstructLstExpr extends Expr {
         return (InstructLstExpr) p;
     }
 
-    protected void ExecInstructions() throws ExecutionSignalException {
+    protected void ExecInstructions() throws ExecutionSignalException, NotAllowedOperationException {
         // init the variables 
         for (Expr e : this.FInitList) {
             e.Exec();
@@ -123,7 +124,7 @@ public class InstructLstExpr extends Expr {
     }
 
     @Override
-    public void Exec() throws ExecutionSignalException {
+    public void Exec() throws ExecutionSignalException, NotAllowedOperationException {
 
         BeforeExec();
 
@@ -135,7 +136,7 @@ public class InstructLstExpr extends Expr {
     }
 
     @Override
-    public void BeforeExec() {
+    public void BeforeExec() throws NotAllowedOperationException {
         super.BeforeExec();
 
         HashMap<String, Value> currentVars = new HashMap<>(FAvaVaribles.size());
@@ -146,7 +147,7 @@ public class InstructLstExpr extends Expr {
     }
 
     @Override
-    public void AfterExec() {
+    public void AfterExec() throws NotAllowedOperationException {
         super.AfterExec();
 
         if (!Variables.empty()) {

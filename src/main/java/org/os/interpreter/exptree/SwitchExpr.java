@@ -7,6 +7,7 @@ package org.os.interpreter.exptree;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.os.interpreter.value.NotAllowedOperationException;
 
 /**
  *
@@ -61,7 +62,7 @@ public class SwitchExpr extends Expr {
     }
 
     @Override
-    public void Exec() throws ExecutionSignalException {
+    public void Exec() throws ExecutionSignalException, NotAllowedOperationException {
         boolean singleCasePassed = false;
         boolean aborted = false;
 

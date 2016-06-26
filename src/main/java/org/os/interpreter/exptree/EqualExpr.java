@@ -5,6 +5,8 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
@@ -16,8 +18,8 @@ public class EqualExpr extends TwoOpsExpr {
     }
 
     @Override
-    public Value Eval() {
-        return new Value(this.getX().Eval().equals(this.getY().Eval()));
+    public Value Eval() throws NotAllowedOperationException {
+        return this.getX().Eval().same(this.getY().Eval());
     }
 
 }

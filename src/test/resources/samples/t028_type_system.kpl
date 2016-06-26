@@ -1,0 +1,12 @@
+var a, b, c, d;
+var z, y, x, k;
+
+a = "abc";
+b = 2;
+c = 4.3;
+
+z = a + b;
+y = b * c;
+x = a + y;
+
+k = "concatenate" + a + b;

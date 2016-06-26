@@ -478,13 +478,27 @@ public class ExpressionTreeBuilderTest {
         v = procedure.getPreviousVariable("x");
         assertEquals(720, v.getValue());
     }
-//
-//    @Test
-//    public void compile() throws Exception, ParseException {
-//        ProcExpr procedure = exec("samples/helloworld.kpl");
-//
-//        Value v = procedure.getPreviousVariable("j");
-//
-//        assertEquals(9, v.getValue());
-//    }
+
+    @Test
+    public void t028_type_system() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t028_type_system.kpl");
+        Value v;
+
+        v = procedure.getPreviousVariable("z");
+        assertEquals("abc2", v.getValue());
+
+        v = procedure.getPreviousVariable("y");
+        assertEquals(8.6f, (float) v.getValue(), 0.001f);
+
+        v = procedure.getPreviousVariable("x");
+        assertEquals("abc8.6", v.getValue());
+
+        v = procedure.getPreviousVariable("k");
+        assertEquals("concatenateabc2", v.getValue());
+    }
+
+    @Test(expected = org.os.interpreter.value.NotAllowedOperationException.class)
+    public void t029_type_system_not_allowed() throws Exception, ParseException {
+        exec("samples/t029_type_system_not_allowed.kpl");
+    }
 }

@@ -51,6 +51,7 @@ import org.os.interpreter.token.Bookmark;
 import org.os.interpreter.token.StreamToken;
 import org.os.interpreter.token.Token;
 import org.os.interpreter.token.Tokenizer;
+import org.os.interpreter.value.ValuableFactory;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -717,7 +718,7 @@ public class ExpressionTreeBuilder {
                 }
                 break;
             case ttValue:
-                ConstExpr constExp = new ConstExpr(tkn.getData());
+                ConstExpr constExp = new ConstExpr(ValuableFactory.fromObject(tkn.getData()));
                 Result.setValue(constExp);
                 break;
         }

@@ -60,6 +60,11 @@ public class FloatValue implements Valuable {
     }
 
     @Override
+    public Valuable notsame(Valuable v) throws NotAllowedOperationException {
+        return TryCmpFloat(v, (cmp) -> cmp != 0);
+    }
+    
+    @Override
     public Valuable smaller(Valuable v) throws NotAllowedOperationException {
         return TryCmpFloat(v, (cmp) -> cmp < 0);
     }
@@ -86,7 +91,7 @@ public class FloatValue implements Valuable {
 
     @Override
     public Valuable not() throws NotAllowedOperationException {
-        throw new NotAllowedOperationException(); 
+        throw new NotAllowedOperationException();
     }
 
     private Valuable TryCmpFloat(
@@ -148,5 +153,4 @@ public class FloatValue implements Valuable {
     public String toString() {
         return Float.toString(floatValue);
     }
-
 }
