@@ -5,6 +5,4 @@ function factorial(n) {
     return n * factorial(n - 1);
 }
 
-var x;
-
-x = factorial(6);
+var x = factorial(6);
