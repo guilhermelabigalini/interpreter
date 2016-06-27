@@ -20,7 +20,7 @@ import org.apache.commons.cli.ParseException;
  */
 public class RunnerStartupInfo {
 
-    private final String COMMAND_LINE = "java -jar interpreter.jar ";
+    private final String COMMAND_LINE = "kepler ";
     
     private final String[] args;
     private Options options;
