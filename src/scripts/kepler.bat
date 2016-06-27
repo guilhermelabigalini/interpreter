@@ -1,0 +1,1 @@
+java -cp "org.os.interpreter.jar;dependency/*" org.os.interpreter.Runner %1 %2 %3

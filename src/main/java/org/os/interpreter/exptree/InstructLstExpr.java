@@ -66,6 +66,11 @@ public class InstructLstExpr extends Expr {
         this.FInitList.add(AssignExpr);
     }
 
+    
+    public HashMap<String, Value> getPreviousVariables() {
+        return this.PreviousVariables;
+    }
+    
     public Value getPreviousVariable(String name) {
         Value result = this.PreviousVariables.get(name);
 

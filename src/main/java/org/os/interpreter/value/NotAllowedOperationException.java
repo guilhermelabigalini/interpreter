@@ -5,7 +5,7 @@
  */
 package org.os.interpreter.value;
 
-import org.os.interpreter.RuntimeInterpreterException;
+import org.os.interpreter.expbuilder.RuntimeInterpreterException;
 
 /**
  *

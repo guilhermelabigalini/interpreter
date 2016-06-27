@@ -1,18 +1,26 @@
+package org.os.interpreter.expbuilder;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.os.interpreter;
 
 /**
  *
  * @author guilherme
  */
-public class RuntimeInterpreterException extends Exception {
+public class Reference<T> {
+    
+    private T value;
 
-    public RuntimeInterpreterException(String message) {
-        super(message);
+    public T getValue() {
+        return value;
     }
 
+    public void setValue(T value) {
+        this.value = value;
+    }
+    
+    
 }

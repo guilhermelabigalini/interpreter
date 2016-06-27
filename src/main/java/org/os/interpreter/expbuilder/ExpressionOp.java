@@ -1,4 +1,4 @@
-package org.os.interpreter;
+package org.os.interpreter.expbuilder;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -10,17 +10,6 @@ package org.os.interpreter;
  *
  * @author guilherme
  */
-public class Reference<T> {
-    
-    private T value;
-
-    public T getValue() {
-        return value;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
-    }
-    
-    
+public enum ExpressionOp {
+    opNone, opNot, opMinus, opMinusMinus, opPlusPlus
 }

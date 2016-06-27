@@ -6,7 +6,7 @@
 package org.os.interpreter.token;
 
 import static java.lang.Character.*;
-import org.os.interpreter.Reference;
+import org.os.interpreter.expbuilder.Reference;
 import static org.os.interpreter.token.CharHelper.*;
 
 /**

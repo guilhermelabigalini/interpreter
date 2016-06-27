@@ -5,6 +5,8 @@
  */
 package org.os.interpreter;
 
+import org.os.interpreter.expbuilder.ExpressionTreeBuilder;
+import org.os.interpreter.expbuilder.ParseException;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
