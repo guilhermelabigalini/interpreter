@@ -1,6 +1,6 @@
 Kepler Language - a interpreter implemented in Java
 ========================================
-
+[![Build Status](https://travis-ci.org/guilhermelabigalini/interpreter.svg?branch=master)](https://travis-ci.org/guilhermelabigalini/interpreter)
 ## Features
 --------
 Kepler Language provides most common commands used in modern programming languages, this includes:
