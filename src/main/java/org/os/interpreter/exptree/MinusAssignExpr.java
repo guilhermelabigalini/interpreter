@@ -18,7 +18,7 @@ public class MinusAssignExpr extends AssignExpr {
     }
 
     @Override
-    public void Exec() throws NotAllowedOperationException {
+    public void Exec() throws NotAllowedOperationException, ExecutionSignalException {
         Value v = this.getCurrentVar();
         v.setValue(v.subtract(this.getEvalExpr().Eval()));
     }

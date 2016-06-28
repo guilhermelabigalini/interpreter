@@ -25,7 +25,7 @@ public abstract class Expr {
 
     public abstract void Exec() throws ExecutionSignalException, NotAllowedOperationException;
     
-    public void BeforeExec()  throws NotAllowedOperationException {
+    public void BeforeExec()  throws NotAllowedOperationException, ExecutionSignalException {
     }
     
     public void AfterExec()  throws NotAllowedOperationException {

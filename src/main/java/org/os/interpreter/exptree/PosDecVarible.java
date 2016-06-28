@@ -18,7 +18,7 @@ public class PosDecVarible extends EvalExpr {
     }
 
     @Override
-    public Value Eval() throws NotAllowedOperationException {
+    public Value Eval() throws NotAllowedOperationException, ExecutionSignalException {
         // x++
         // return the value, then descremen 
         EvaluableExpr x = this.getX();

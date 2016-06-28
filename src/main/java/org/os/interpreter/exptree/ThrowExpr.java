@@ -5,19 +5,24 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
  */
 public class ThrowExpr extends Expr {
 
-    public ThrowExpr(Expr parent) {
+    private final EvaluableExpr ThrowExpr;
+
+    public ThrowExpr(Expr parent, EvaluableExpr ThrowExpr) {
         super(parent);
+        this.ThrowExpr = ThrowExpr;
     }
 
     @Override
-    public void Exec() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void Exec() throws ExecutionSignalException, NotAllowedOperationException {
+        throw new ThrowSignalException(ThrowExpr.Eval());
     }
 
 }

@@ -18,7 +18,7 @@ public class PlusAssignExpr extends AssignExpr {
     }
 
     @Override
-    public void Exec() throws NotAllowedOperationException {
+    public void Exec() throws NotAllowedOperationException, ExecutionSignalException {
         Value v = this.getCurrentVar();
         v.setValue(v.sum(this.getEvalExpr().Eval()));
     }

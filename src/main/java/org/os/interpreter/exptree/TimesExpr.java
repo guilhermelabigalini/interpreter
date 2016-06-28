@@ -18,7 +18,7 @@ public class TimesExpr extends TwoOpsExpr {
     }
 
     @Override
-    public Value Eval() throws NotAllowedOperationException {
+    public Value Eval() throws NotAllowedOperationException, ExecutionSignalException {
         return this.getX().Eval().times(this.getY().Eval());
     }
     

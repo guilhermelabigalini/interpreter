@@ -40,7 +40,7 @@ public class InstructLstExpr extends Expr {
         FInstructList.add(Data);
     }
 
-    public void AddVar(String name) {
+    public final void AddVar(String name) {
         this.FAvaVaribles.add(name);
     }
 
@@ -141,7 +141,7 @@ public class InstructLstExpr extends Expr {
     }
 
     @Override
-    public void BeforeExec() throws NotAllowedOperationException {
+    public void BeforeExec() throws NotAllowedOperationException, ExecutionSignalException {
         super.BeforeExec();
 
         HashMap<String, Value> currentVars = new HashMap<>(FAvaVaribles.size());

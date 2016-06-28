@@ -34,6 +34,10 @@ public class Value {
         return new Value(ValuableFactory.fromInt(i));
     }
 
+    public static Value forString(String str) {
+        return new Value(ValuableFactory.fromString(str));
+    }
+ 
     public Value(Valuable value) {
         this.value = value;
     }

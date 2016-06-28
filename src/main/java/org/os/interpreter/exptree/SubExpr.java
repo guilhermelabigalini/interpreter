@@ -18,7 +18,7 @@ public class SubExpr extends TwoOpsExpr {
     }
 
     @Override
-    public Value Eval() throws NotAllowedOperationException {
+    public Value Eval() throws NotAllowedOperationException, ExecutionSignalException {
         return this.getX().Eval().subtract(this.getY().Eval());
     }
 

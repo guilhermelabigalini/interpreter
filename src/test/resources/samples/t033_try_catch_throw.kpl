@@ -1,0 +1,12 @@
+var error = false;
+var exception;
+var f1 = false;
+
+try {
+    throw "My error";
+} catch (e) {
+    exception = e;
+    error = true;
+} finally {
+    f1 = true;
+}

@@ -21,7 +21,7 @@ public class AssignIncExpr extends Expr {
     }
 
     @Override
-    public void Exec() throws NotAllowedOperationException {
+    public void Exec() throws NotAllowedOperationException, ExecutionSignalException {
         
         IncExpr.Eval();
     }

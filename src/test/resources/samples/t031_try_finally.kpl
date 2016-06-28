@@ -1,0 +1,8 @@
+var f1 = false;
+var i;
+
+try {
+    i = 1 + 1;
+} finally {
+    f1 = true;
+}

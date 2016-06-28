@@ -36,6 +36,7 @@ public class Error {
     public static final String EDEFEXISTS = "Error (%d): \"default\" statement already exists.";
     public static final String E2POINTS = "Error (%d): Operator expected but \":\" found.";
     public static final String EENDTRY = "Error (%d): \"catch\" or \"finally\" expected but not found.";
+    public static final String ECATCHWITHOUTVAR = "Error (%d): \"catch\" does not have variable definition.";
     public static final String EINVTYPE = "Error (%d): invalid varible type";
     public static final String EPREDEC = "Error (%d): pre-decrement operator is only avaiable for varibles.";
     public static final String EPREINC = "Error (%d): pre-increment operator is only avaiable for varibles.";

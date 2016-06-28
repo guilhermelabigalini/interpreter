@@ -503,4 +503,58 @@ public class ExpressionTreeBuilderTest {
     public void t029_type_system_not_allowed() throws Exception, ParseException {
         exec("samples/t029_type_system_not_allowed.kpl");
     }
+
+    @Test
+    public void t030_try_catch() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t030_try_catch.kpl");
+        Value v;
+
+        v = procedure.getPreviousVariable("error");
+        assertEquals(true, v.getValue());
+
+        v = procedure.getPreviousVariable("exception");
+        assertTrue(v.getValue().toString().contains("/ by zero"));
+    }
+
+    @Test
+    public void t031_try_finally() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t031_try_finally.kpl");
+        Value v;
+
+        v = procedure.getPreviousVariable("i");
+        assertEquals(2, v.getValue());
+
+        v = procedure.getPreviousVariable("f1");
+        assertEquals(true, v.getValue());
+    }
+
+    @Test
+    public void t032_try_catch_finally() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t032_try_catch_finally.kpl");
+        Value v;
+
+        v = procedure.getPreviousVariable("error");
+        assertEquals(true, v.getValue());
+
+        v = procedure.getPreviousVariable("exception");
+        assertTrue(v.getValue().toString().contains("/ by zero"));
+
+        v = procedure.getPreviousVariable("f1");
+        assertEquals(true, v.getValue());
+    }
+    
+    @Test
+    public void t033_try_catch_throw() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t033_try_catch_throw.kpl");
+        Value v;
+
+        v = procedure.getPreviousVariable("error");
+        assertEquals(true, v.getValue());
+
+        v = procedure.getPreviousVariable("exception");
+        assertTrue(v.getValue().toString().contains("My error"));
+
+        v = procedure.getPreviousVariable("f1");
+        assertEquals(true, v.getValue());
+    }
 }

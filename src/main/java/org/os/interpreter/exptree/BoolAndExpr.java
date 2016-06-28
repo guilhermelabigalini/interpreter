@@ -18,7 +18,7 @@ public class BoolAndExpr extends TwoOpsExpr {
     }
 
     @Override
-    public Value Eval() throws NotAllowedOperationException {
+    public Value Eval() throws NotAllowedOperationException, ExecutionSignalException {
         return Value.forBoolean(this.getX().Eval().asBoolean() && this.getY().Eval().asBoolean());
     }
     

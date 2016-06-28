@@ -37,7 +37,7 @@ public class UserFuncTemp extends InstructLstExpr {
     }
 
     @Override
-    public void BeforeExec() throws NotAllowedOperationException {
+    public void BeforeExec() throws NotAllowedOperationException, ExecutionSignalException {
         // resolve the parameter values
         Value[] values = new Value[this.parameters.size()];
         for (int p = 0; p < this.parameters.size(); p++) {
@@ -54,7 +54,7 @@ public class UserFuncTemp extends InstructLstExpr {
         }
     }
     
-    public Value Eval(List<EvaluableExpr> args) throws NotAllowedOperationException {
+    public Value Eval(List<EvaluableExpr> args) throws NotAllowedOperationException, ExecutionSignalException {
         try {
             this.args = args;
             
@@ -64,8 +64,6 @@ public class UserFuncTemp extends InstructLstExpr {
             
         } catch (ReturnSignalException ex) {
             return ex.getValue();
-        } catch (ExecutionSignalException ex) {
-            return Value.Null;
-        }
+        } 
     }
 }

@@ -1,0 +1,9 @@
+var error = false;
+var exception;
+
+try {
+    var i = 10 / 0;
+} catch (e) {
+    exception = e;
+    error = true;
+}

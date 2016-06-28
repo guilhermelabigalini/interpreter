@@ -11,6 +11,7 @@ import org.os.interpreter.exptree.BiggerExpr;
 import org.os.interpreter.exptree.BoolAndExpr;
 import org.os.interpreter.exptree.BoolOrExpr;
 import org.os.interpreter.exptree.BreakExpr;
+import org.os.interpreter.exptree.CatchBlockExpr;
 import org.os.interpreter.exptree.ConstExpr;
 import org.os.interpreter.exptree.ContinueExpr;
 import org.os.interpreter.exptree.EvaluableExpr;
@@ -40,8 +41,10 @@ import org.os.interpreter.exptree.SmallerEqualExpr;
 import org.os.interpreter.exptree.SmallerExpr;
 import org.os.interpreter.exptree.SubExpr;
 import org.os.interpreter.exptree.SwitchExpr;
+import org.os.interpreter.exptree.ThrowExpr;
 import org.os.interpreter.exptree.TimesAssignExpr;
 import org.os.interpreter.exptree.TimesExpr;
+import org.os.interpreter.exptree.TryCatchFinallyExpr;
 import org.os.interpreter.exptree.TwoOpsExpr;
 import org.os.interpreter.exptree.UserFuncCaller;
 import org.os.interpreter.exptree.UserFuncTemp;
@@ -146,11 +149,10 @@ public class ExpressionTreeBuilder {
                 tmpR = ReadSwitch(Expr);
                 caseCount--;
                 return tmpR;
-            /*
             case ttTry:
                 return ReadTry(Expr);
             case ttThrow:
-                return ReadThrow(Expr);*/
+                return ReadThrow(Expr);
             case ttFunction:
                 if (FReadingFunction) {
                     logError(Error.EFUNCINFUNC);
@@ -213,7 +215,7 @@ public class ExpressionTreeBuilder {
             return false;
         }
 
-        if (!LeComNivels(Expr, EvalExpr, ExpressionStep.esSubExpr)) //erro ao ler condicao, erro ja foi gerado
+        if (!ReadExpression(Expr, EvalExpr, ExpressionStep.esSubExpr)) //erro ao ler condicao, erro ja foi gerado
         {
             return false;
         }
@@ -233,7 +235,7 @@ public class ExpressionTreeBuilder {
                 switchItem = new SwitchExpr.SwitchItem(switchExpr);
                 do {
                     CaseItem.setValue(null);
-                    if (!LeComNivels(Expr, CaseItem, ExpressionStep.esCase)) //erro ao ler condicao, erro ja foi gerado
+                    if (!ReadExpression(Expr, CaseItem, ExpressionStep.esCase)) //erro ao ler condicao, erro ja foi gerado
                     {
                         return false;
                     }
@@ -364,7 +366,7 @@ public class ExpressionTreeBuilder {
                     //a variavel foi encontrada, .·. devemos processar a expressao
                     Reference<EvaluableExpr> ref = new Reference<>();
 
-                    if (!LeComNivels(Expr, ref, ExprStep)) {
+                    if (!ReadExpression(Expr, ref, ExprStep)) {
                         return false;
                     }
 
@@ -456,7 +458,7 @@ public class ExpressionTreeBuilder {
                         Reference<EvaluableExpr> ref = new Reference<>();
                         while (FLastTkn.getToken() != Token.ttBRight && FLastTkn.getToken() != Token.ttEof) {
                             //we have a value parameter
-                            if (!LeComNivels(Expr,  ref, ExpressionStep.esFunction)) {
+                            if (!ReadExpression(Expr, ref, ExpressionStep.esFunction)) {
                                 return false;
                             }
                             UserFuncExpr.AddArg(ref.getValue());
@@ -490,7 +492,7 @@ public class ExpressionTreeBuilder {
         return false;
     }
 
-    private boolean LeComNivels(InstructLstExpr Expr, Reference<EvaluableExpr> Result, ExpressionStep ExprStep) {
+    private boolean ReadExpression(InstructLstExpr Expr, Reference<EvaluableExpr> Result, ExpressionStep ExprStep) {
 
         TwoOpsExpr Expr2Ops;
         StreamToken tkn;
@@ -502,7 +504,7 @@ public class ExpressionTreeBuilder {
         do {
             Reference<EvaluableExpr> refEvalExp = new Reference<>();
 
-            if (!LeValor(Expr, refEvalExp)) {
+            if (!ReadExpressionValue(Expr, refEvalExp)) {
                 return false;
             }
 
@@ -603,7 +605,7 @@ public class ExpressionTreeBuilder {
         return true;
     }
 
-    private boolean LeValor(InstructLstExpr Expr, Reference<EvaluableExpr> Result) {
+    private boolean ReadExpressionValue(InstructLstExpr Expr, Reference<EvaluableExpr> Result) {
         StreamToken tkn;
         EvaluableExpr OldR;
         ExpressionOp firstOp = ExpressionOp.opNone, secondOp = ExpressionOp.opNone;
@@ -645,7 +647,7 @@ public class ExpressionTreeBuilder {
 
         switch (tkn.getToken()) {
             case ttBLeft:
-                if (!LeComNivels(Expr, Result, ExpressionStep.esSubExpr)) {
+                if (!ReadExpression(Expr, Result, ExpressionStep.esSubExpr)) {
                     return false;
                 }
                 break;
@@ -688,7 +690,7 @@ public class ExpressionTreeBuilder {
 
                         while (FLastTkn.getToken() != Token.ttBRight && FLastTkn.getToken() != Token.ttEof) {
                             //we have a value parameter
-                            if (!LeComNivels(Expr, EvalExpr, ExpressionStep.esFunction)) {
+                            if (!ReadExpression(Expr, EvalExpr, ExpressionStep.esFunction)) {
                                 return false;
                             }
                             UserFuncExpr.AddArg(EvalExpr.getValue());
@@ -833,7 +835,7 @@ public class ExpressionTreeBuilder {
             return false;
         }
 
-        if (!LeComNivels(Expr, Condition, ExpressionStep.esSubExpr)) {
+        if (!ReadExpression(Expr, Condition, ExpressionStep.esSubExpr)) {
             //erro ao ler condicao, erro gerado
             return false;
         }
@@ -902,7 +904,7 @@ public class ExpressionTreeBuilder {
 
         tkn = FTokenizer.GetNextToken();
         if (tkn.getToken() == Token.ttBLeft) {
-            if (!LeComNivels(Expr, Condition, ExpressionStep.esSubExpr)) {
+            if (!ReadExpression(Expr, Condition, ExpressionStep.esSubExpr)) {
                 //erro ao ler condicao, erro ja gerado
                 return false;
             }
@@ -945,7 +947,7 @@ public class ExpressionTreeBuilder {
             return false;
         }
 
-        if (!LeComNivels(Expr, Condition, ExpressionStep.esSubExpr)) {
+        if (!ReadExpression(Expr, Condition, ExpressionStep.esSubExpr)) {
             //erro ao ler condicao, erro ja gerado
             return false;
         }
@@ -986,7 +988,7 @@ public class ExpressionTreeBuilder {
             }
         }
 
-        if (!LeComNivels(Expr, Condition, ExpressionStep.esNone)) {
+        if (!ReadExpression(Expr, Condition, ExpressionStep.esNone)) {
             //erro ao ler expressao de condicao, erro gerado
             return false;
         }
@@ -1086,13 +1088,99 @@ public class ExpressionTreeBuilder {
 
         if (tkn.getToken() != Token.ttSemicolon) {
             FTokenizer.GotoBookmark(book);
-            if (!LeComNivels(Expr, returnExpr, ExpressionStep.esNone)) {
+            if (!ReadExpression(Expr, returnExpr, ExpressionStep.esNone)) {
                 return false;
             }
         }
 
         ReturnExpr ReturnExpr = new ReturnExpr(Expr, returnExpr.getValue());
         Expr.AddItem(ReturnExpr);
+        return true;
+    }
+
+    private boolean ReadThrow(InstructLstExpr Expr) {
+
+        Reference<EvaluableExpr> ValueExpr = new Reference<>();
+
+        Bookmark Book = FTokenizer.GetBookmark();
+        StreamToken tkn = FTokenizer.GetNextToken();
+        if (tkn.getToken() != Token.ttSemicolon) {
+            FTokenizer.GotoBookmark(Book);
+            if (!ReadExpression(Expr, ValueExpr, ExpressionStep.esNone)) {
+                return false;
+            }
+        }
+        ThrowExpr ThrowExpr = new ThrowExpr(Expr, ValueExpr.getValue());
+        Expr.AddItem(ThrowExpr);
+        return true;
+    }
+
+    private boolean ReadTry(InstructLstExpr Expr) {
+        ProcExpr DangerBlck;
+        CatchBlockExpr ExceptionBlck = null;
+        ProcExpr FinallyBlck = null;
+        String catchVarName;
+        
+        Bookmark book = null;
+        StreamToken tkn;
+
+        DangerBlck = new ProcExpr(Expr);
+        if (!ReadBlock(DangerBlck, false)) {
+            return false;
+        }
+
+        tkn = FTokenizer.GetNextToken();
+
+        if (tkn.getToken() == Token.ttCatch) {
+            book = FTokenizer.GetBookmark();
+            tkn = FTokenizer.GetNextToken();
+
+            if (tkn.getToken() == Token.ttBLeft) {
+                tkn = FTokenizer.GetNextToken();
+                if (tkn.getToken() != Token.ttName) {
+                    logError(Error.EVARNAMENTFND);
+                    return false;
+                }
+                
+                catchVarName = (String)tkn.getData();
+
+                tkn = FTokenizer.GetNextToken();
+                if (tkn.getToken() != Token.ttBRight) {
+                    logError(Error.EFUNCBRIGHT);
+                    return false;
+                }
+                
+            } else {
+                logError(Error.ECATCHWITHOUTVAR);
+                return false;
+            }
+
+            ExceptionBlck = new CatchBlockExpr(Expr, catchVarName);
+            
+            if (!ReadBlock(ExceptionBlck, false)) {
+                return false;
+            }
+        }
+
+        if (ExceptionBlck != null) {
+            // just read CATCH block, move to next token to look for finally
+            book = FTokenizer.GetBookmark();
+            tkn = FTokenizer.GetNextToken();
+        }
+
+        if (tkn.getToken() == Token.ttFinally) {
+            FinallyBlck = new ProcExpr(Expr);
+            if (!ReadBlock(FinallyBlck, false)) {
+                return false;
+            }
+        } else if (ExceptionBlck == null) {
+            logError(Error.EENDTRY);
+            return false;
+        } else {
+            // there is not FINALLY after the CATCH
+            FTokenizer.GotoBookmark(book);
+        }
+        Expr.AddItem(new TryCatchFinallyExpr(Expr, DangerBlck, ExceptionBlck, FinallyBlck));
         return true;
     }
 }

@@ -37,7 +37,7 @@ public class AssignExpr extends Expr {
     }
 
     @Override
-    public void Exec() throws NotAllowedOperationException {
+    public void Exec() throws NotAllowedOperationException, ExecutionSignalException {
         Value v = this.getCurrentVar();
         v.setValue(EvalExpr.Eval());
     }

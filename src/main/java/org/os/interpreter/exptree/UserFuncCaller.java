@@ -27,7 +27,7 @@ public class UserFuncCaller extends Expr implements EvaluableExpr {
     }
 
     @Override
-    public Value Eval() throws NotAllowedOperationException {
+    public Value Eval() throws NotAllowedOperationException, ExecutionSignalException {
         return UserFuncTemp.Eval(args);
     }
 

@@ -21,7 +21,7 @@ public class ReturnExpr extends Expr {
     }
 
     @Override
-    public void Exec() throws ReturnSignalException, NotAllowedOperationException {
+    public void Exec() throws ExecutionSignalException, NotAllowedOperationException {
         Value result = null;
         
         if (returnExp != null) 

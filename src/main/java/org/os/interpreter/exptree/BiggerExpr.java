@@ -18,7 +18,7 @@ public class BiggerExpr extends TwoOpsExpr {
     }
 
     @Override
-    public Value Eval() throws NotAllowedOperationException {
+    public Value Eval() throws NotAllowedOperationException, ExecutionSignalException {
         return this.getX().Eval().bigger(this.getY().Eval());
     }
     

@@ -5,13 +5,19 @@
  */
 package org.os.interpreter.exptree;
 
-import org.os.interpreter.value.NotAllowedOperationException;
-
 /**
  *
  * @author guilherme
  */
-public interface EvaluableExpr {
+public class ThrowSignalException extends ExecutionSignalException {
 
-    public Value Eval() throws NotAllowedOperationException, ExecutionSignalException;
+    private final Value value;
+
+    public ThrowSignalException(Value value) {
+        this.value = value;
+    }
+
+    public Value getValue() {
+        return value;
+    }
 }

@@ -5,21 +5,45 @@
  */
 package org.os.interpreter.exptree;
 
+import org.os.interpreter.value.NotAllowedOperationException;
+
 /**
  *
  * @author guilherme
  */
 public class TryCatchFinallyExpr extends Expr {
 
-    public TryCatchFinallyExpr(Expr parent) {
+    ProcExpr FDangerBlock, FFinnalyBlock;
+    CatchBlockExpr FExceptionBlock;
+
+    public TryCatchFinallyExpr(Expr parent,
+            ProcExpr FDangerBlock,
+            CatchBlockExpr FExceptionBlock,
+            ProcExpr FFinnalyBlock) {
         super(parent);
+        this.FDangerBlock = FDangerBlock;
+        this.FExceptionBlock = FExceptionBlock;
+        this.FFinnalyBlock = FFinnalyBlock;
     }
 
     @Override
-    public void Exec() throws ExecutionSignalException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void Exec() throws ExecutionSignalException, NotAllowedOperationException {
+        try {
+            this.FDangerBlock.Exec();
+        } catch (ThrowSignalException e) {
+            if (this.FExceptionBlock != null) {
+                this.FExceptionBlock.Exec(e.getValue());
+            }
+        } catch (ExecutionSignalException e) {
+            throw e;
+        } catch (Throwable e) {
+            if (this.FExceptionBlock != null) {
+                this.FExceptionBlock.Exec(Value.forString(e.getMessage()));
+            }
+        } finally {
+            if (this.FFinnalyBlock != null) {
+                this.FFinnalyBlock.Exec();
+            }
+        }
     }
-    
-    
-    
 }
