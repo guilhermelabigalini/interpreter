@@ -1,4 +1,4 @@
-Kepler Language - a interpreter implemented in Java
+Kepler Language - an interpreter implemented in Java
 ========================================
 [![Build Status](https://travis-ci.org/guilhermelabigalini/interpreter.svg?branch=master)](https://travis-ci.org/guilhermelabigalini/interpreter)
 ## Features
@@ -17,7 +17,7 @@ Kepler Language provides most common commands used in modern programming languag
 Sample codes used to test the interpreter are avaiable on the code repository at 
 [interpreter/src/test/resources/samples/](https://github.com/guilhermelabigalini/interpreter/tree/master/src/test/resources/samples), below are some small examples.
 
-### Sample: Create User Function 
+### Sample: Create Recursive Function
 
 ```javascript
 function factorial(n) {
@@ -39,6 +39,25 @@ for (i = 1; i <= 10; i++) {
         break;
     else 
         r++;
+}
+```
+### Sample: Comparing values with switch-case
+```javascript
+var v;
+var r;
+
+v = "abc";
+
+switch (v) {
+    case "a": {
+        r = 1;
+        break;
+    }
+    case "abc": {
+        r = 2;
+    }    
+    default: 
+        r += 3;
 }
 ```
 
