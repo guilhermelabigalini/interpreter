@@ -34,6 +34,8 @@ public class TryCatchFinallyExpr extends Expr {
             if (this.FExceptionBlock != null) {
                 this.FExceptionBlock.Exec(e.getValue());
             }
+        } catch (ExecutionSignalException e) {
+            throw e;
         } catch (Throwable e) {
             if (this.FExceptionBlock != null) {
                 this.FExceptionBlock.Exec(Value.forString(e.getMessage()));

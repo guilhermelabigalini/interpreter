@@ -557,4 +557,16 @@ public class ExpressionTreeBuilderTest {
         v = procedure.getPreviousVariable("f1");
         assertEquals(true, v.getValue());
     }
+    
+    @Test
+    public void t034_try_catch_func() throws Exception, ParseException {
+        ProcExpr procedure = exec("samples/t034_try_catch_func.kpl");
+        Value v;
+
+        v = procedure.getPreviousVariable("v1");
+        assertEquals(4.0f, (float)v.getValue(), 0.0f);
+
+        v = procedure.getPreviousVariable("v2");
+        assertEquals(0, v.getValue());
+    }
 }

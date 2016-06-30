@@ -1,0 +1,13 @@
+
+
+function tryDiv(a, b) {
+    try {
+        return a / b;
+    } catch (e) {
+        return 0;
+    } 
+}
+
+var v1 = tryDiv(10.0, 2.5);
+var v2 = tryDiv(10, 0);
+
